@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zeitungsecke - газетный уголок · Fundus</title>
+<meta name="description" content="Заметки и вырезки из старых газет и периодики, найденные в ходе генеалогического поиска, с датой, находкой и источником каждой заметки. 1871–1909.">
+<link rel="canonical" href="https://fundus.hartschenberg.de/zeitungsecke/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/style.css?v=6e803b7e">
+<style>
+.sort-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 4px}
+.sort-label{font-size:.82em;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-dim)}
+.sort-pill{border:1px solid var(--rule);background:transparent;color:var(--ink);
+  font:inherit;font-size:.88em;padding:4px 12px;border-radius:14px;cursor:pointer}
+.sort-pill:hover{background:var(--paper-2)}
+.sort-pill.active{border-color:var(--accent);color:var(--accent);font-weight:700}
+</style>
+<!-- og:auto -->
+<meta property="og:site_name" content="Fundus">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://fundus.hartschenberg.de/zeitungsecke/">
+<meta property="og:title" content="Zeitungsecke - газетный уголок">
+<meta property="og:description" content="Заметки и вырезки из старых газет и периодики, найденные в ходе генеалогического поиска, с датой, находкой и источником каждой заметки. 1871–1909.">
+<meta property="og:image" content="https://fundus.hartschenberg.de/og-default.png">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /og:auto -->
+</head>
+<body>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=111205749', 'ym');
+
+    ym(111205749, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/111205749" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a class="brand" href="/">Fundus<small>Родовой архив</small></a>
+    <div class="section-links">
+      <a class="section-link" href="/">Fundus</a>
+      <a class="section-link active" href="/zeitungsecke/">Zeitungsecke</a>
+      <a class="section-link" href="/lichtbilder/">Lichtbilder</a>
+      <a class="section-link" href="/dna-spurensuche/">DNA-Spurensuche</a>
+      <a class="section-link" href="/familienraetsel/">Gelöste Familienrätsel</a>
+      <a class="section-link" href="/quellen/">Quellen</a>
+      <a class="section-link" href="/kontakt/" lang="de">Beratungsgespräch</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="page">
+    <p class="eyebrow">Газетный уголок</p>
+    <h1>Zeitungsecke</h1>
+    <p class="dek">Вырезки и заметки из старых газет, дневников и периодики, найденные в архивах и на форумах, каждая со своим годом, источником и находкой.</p>
+  </header>
+
+  <div class="year-cloud" id="year-cloud">
+    <button class="year-pill active" data-year="all">Все</button>
+    <button class="year-pill" data-year="1871">1871</button>
+    <button class="year-pill" data-year="1885">1885</button>
+    <button class="year-pill" data-year="1886">1886</button>
+    <button class="year-pill" data-year="1888">1888</button>
+    <button class="year-pill" data-year="1889">1889</button>
+    <button class="year-pill" data-year="1890">1890</button>
+    <button class="year-pill" data-year="1893">1893</button>
+    <button class="year-pill" data-year="1895">1895</button>
+    <button class="year-pill" data-year="1896">1896</button>
+    <button class="year-pill" data-year="1898">1898</button>
+    <button class="year-pill" data-year="1900">1900</button>
+    <button class="year-pill" data-year="1902">1902</button>
+    <button class="year-pill" data-year="1903">1903</button>
+    <button class="year-pill" data-year="1909">1909</button>
+  </div>
+
+  <div class="sort-bar" id="sort-bar">
+    <span class="sort-label">Порядок:</span>
+    <button class="sort-pill active" data-sort="new" title="Сначала недавно добавленные на сайт">↓ новые</button>
+    <button class="sort-pill" data-sort="old" title="Сначала добавленные на сайт раньше всех">↑ старые</button>
+    <button class="sort-pill" data-sort="year-desc" title="По году самой вырезки, от поздних к ранним">↓ по годам</button>
+    <button class="sort-pill" data-sort="year-asc" title="По году самой вырезки, от ранних к поздним">↑ по годам</button>
+  </div>
+
+  <ul class="entry-list" id="entry-list">
+
+    <li class="entry" data-years="1871" data-added="1">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1871-vyzov-kazakov/">
+        <div class="entry-text">
+          <p class="entry-title">Вызов казаков на Борохудзир</p>
+          <p class="entry-meta"><span class="clip-year">1871</span> · «Семиреченские ведомости» · Никита Нэйтан Харченберг</p>
+        </div>
+        <img class="entry-thumb" src="1871-vyzov-kazakov/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1871" data-added="2">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1871-osnovanie-borohudzira/">
+        <div class="entry-text">
+          <p class="entry-title">Об основании Борохудзира</p>
+          <p class="entry-meta"><span class="clip-year">1871</span> · «Туркестанские ведомости» · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1871-osnovanie-borohudzira/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1871" data-added="3">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1871-zakon-cerkov-bahty/">
+        <div class="entry-text">
+          <p class="entry-title">Закон № 49999: церковь в Бахты</p>
+          <p class="entry-meta"><span class="clip-year">1871</span> · законодательный акт · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1871-zakon-cerkov-bahty/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1885" data-added="4">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1885-spisok-stanichnyh-obshchestv/">
+        <div class="entry-text">
+          <p class="entry-title">Список станичных обществ</p>
+          <p class="entry-meta"><span class="clip-year">1885</span> · СОВ · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1885-spisok-stanichnyh-obshchestv/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1885" data-added="5">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1885-kazak-cherepkov-propal/">
+        <div class="entry-text">
+          <p class="entry-title">Пропавший казак Андрей Черепков</p>
+          <p class="entry-meta"><span class="clip-year">1885</span> · СОВ · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1885-kazak-cherepkov-propal/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1886" data-added="6">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1886-kazennyi-sad/">
+        <div class="entry-text">
+          <p class="entry-title">Торги на казённый сад в Борохудзире</p>
+          <p class="entry-meta"><span class="clip-year">1886</span> · СОВ · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1886-kazennyi-sad/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1889" data-added="7">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1889-pomosch-postradavshim-zemletryasenie/">
+        <div class="entry-text">
+          <p class="entry-title">Помощь пострадавшим от землетрясения</p>
+          <p class="entry-meta"><span class="clip-year">1889</span> · СОВ · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1889-pomosch-postradavshim-zemletryasenie/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1895" data-added="8">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1895-smert-svyaschennika-sokolova/">
+        <div class="entry-text">
+          <p class="entry-title">Смерть голубевского священника Соколова</p>
+          <p class="entry-meta"><span class="clip-year">1895</span> · СОВ · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1895-smert-svyaschennika-sokolova/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1898" data-added="9">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1898-golubevskaya-shkola/">
+        <div class="entry-text">
+          <p class="entry-title">Пожертвование на Голубевскую школу</p>
+          <p class="entry-meta"><span class="clip-year">1898</span> · «Сибирская жизнь» · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1898-golubevskaya-shkola/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1909" data-added="10">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1909-podpis-atamana-komarova/">
+        <div class="entry-text">
+          <p class="entry-title">Подпись станичного атамана Комарова</p>
+          <p class="entry-meta"><span class="clip-year">1909</span> · ЦГА РК, архивный документ · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1909-podpis-atamana-komarova/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1888" data-added="11">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1888-epidemiya-zoba/">
+        <div class="entry-text">
+          <p class="entry-title">Эпидемия зоба в гарнизоне Борохудзира</p>
+          <p class="entry-meta"><span class="clip-year">1888</span> · медицинская брошюра, Омск 1890 · Никита Нэйтан Харченберг</p>
+        </div>
+        <img class="entry-thumb" src="1888-epidemiya-zoba/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1890" data-added="12">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1890-izbranie-atamana/">
+        <div class="entry-text">
+          <p class="entry-title">Избрание станичного атамана</p>
+          <p class="entry-meta"><span class="clip-year">1890</span> · «Семиреченские ведомости» · Никита Нэйтан Харченберг</p>
+        </div>
+        <img class="entry-thumb" src="1890-izbranie-atamana/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1893" data-added="13">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1893-o-nalozhenii-zapreshcheniya/">
+        <div class="entry-text">
+          <p class="entry-title">О наложении запрещения</p>
+          <p class="entry-meta"><span class="clip-year">1893</span> · «Семиреченские ведомости» · Любимова</p>
+        </div>
+        <img class="entry-thumb" src="1893-o-nalozhenii-zapreshcheniya/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1896" data-added="14">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1896-1-maya-borohudzir/">
+        <div class="entry-text">
+          <p class="entry-title">Лагерный сбор в Борохудзире</p>
+          <p class="entry-meta"><span class="clip-year">1896</span> · Дневник священника Туркестанской епархии · Светлана СИ</p>
+        </div>
+        <img class="entry-thumb" src="1896-1-maya-borohudzir/1896_borohudzir.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1900" data-added="15">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1900-perevod-ryabova/">
+        <div class="entry-text">
+          <p class="entry-title">Перевод казака Рябова</p>
+          <p class="entry-meta"><span class="clip-year">1900</span> · «Семиреченские ведомости» · Никита Нэйтан Харченберг</p>
+        </div>
+        <img class="entry-thumb" src="1900-perevod-ryabova/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1902" data-added="16">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1902-burka-i-bychok/">
+        <div class="entry-text">
+          <p class="entry-title">Найденная бурка и приблудившийся бычок</p>
+          <p class="entry-meta"><span class="clip-year">1902</span> · «Семиреченские ведомости» · Никита Нэйтан Харченберг</p>
+        </div>
+        <img class="entry-thumb" src="1902-burka-i-bychok/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1903" data-added="17">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1903-naydennaya-loshad/">
+        <div class="entry-text">
+          <p class="entry-title">Найденная лошадь казака Меньшова</p>
+          <p class="entry-meta"><span class="clip-year">1903</span> · «Семиреченские ведомости» · Никита Нэйтан Харченберг</p>
+        </div>
+        <img class="entry-thumb" src="1903-naydennaya-loshad/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1916" data-added="18">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1916-ataman-zenchenko/">
+        <div class="entry-text">
+          <p class="entry-title">Семён Зенченко утверждён станичным атаманом</p>
+          <p class="entry-meta"><span class="clip-year">1916</span> · «Приказы по Семиреченскому казачьему войску» · Нина Гирлина (Тютявина)</p>
+        </div>
+        <img class="entry-thumb" src="1916-ataman-zenchenko/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1916" data-added="19">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1916-nagrady-opolchenskoy-sotni/">
+        <div class="entry-text">
+          <p class="entry-title">Награждение казаков 7-й ополченской сотни</p>
+          <p class="entry-meta"><span class="clip-year">1916</span> · «Приказы по Семиреченскому казачьему войску» · Нина Гирлина (Тютявина)</p>
+        </div>
+        <img class="entry-thumb" src="1916-nagrady-opolchenskoy-sotni/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+    <li class="entry" data-years="1916" data-added="20">
+      <a class="entry-link with-thumb" href="/zeitungsecke/1916-pogibshie-v-perestrelke/">
+        <div class="entry-text">
+          <p class="entry-title">Погибшие в перестрелке с мятежниками</p>
+          <p class="entry-meta"><span class="clip-year">1916</span> · «Приказы по Семиреченскому казачьему войску» · Нина Гирлина (Тютявина)</p>
+        </div>
+        <img class="entry-thumb" src="1916-pogibshie-v-perestrelke/clip.jpg" alt="" loading="lazy">
+      </a>
+    </li>
+
+  </ul>
+
+</div>
+
+<script>
+(function () {
+  var cloud = document.getElementById('year-cloud');
+  var bar   = document.getElementById('sort-bar');
+  var list  = document.getElementById('entry-list');
+  var entries = Array.prototype.slice.call(list.querySelectorAll('li.entry'));
+
+  // облако годов строится ИЗ САМИХ ЗАПИСЕЙ - новые вырезки попадают в фильтр автоматически
+  var years = {};
+  entries.forEach(function (li) {
+    (li.dataset.years || '').split(' ').filter(Boolean).forEach(function (y) { years[y] = 1; });
+  });
+  var sorted = Object.keys(years).sort();
+  cloud.innerHTML = '<button class="year-pill active" data-year="all">Все</button>' +
+    sorted.map(function (y) { return '<button class="year-pill" data-year="' + y + '">' + y + '</button>'; }).join('');
+
+  // подписи кнопок сортировки по годам - из фактического диапазона вырезок
+  if (sorted.length) {
+    var lo = sorted[0], hi = sorted[sorted.length - 1];
+    var bd = bar.querySelector('[data-sort="year-desc"]');
+    var ba = bar.querySelector('[data-sort="year-asc"]');
+    if (bd) bd.textContent = '↓ ' + hi + ' → ' + lo;
+    if (ba) ba.textContent = '↑ ' + lo + ' → ' + hi;
+  }
+
+  var curYear = 'all', curSort = 'new';
+
+  function yearOf(li) {
+    var ys = (li.dataset.years || '').split(' ').filter(Boolean).map(Number);
+    return ys.length ? Math.min.apply(null, ys) : 0;
+  }
+  function addedOf(li) { return parseInt(li.dataset.added || '0', 10); }
+
+  function apply() {
+    entries.forEach(function (li) {
+      var ys = (li.dataset.years || '').split(' ');
+      li.classList.toggle('hidden', curYear !== 'all' && ys.indexOf(curYear) === -1);
+    });
+    var vis = entries.slice().sort(function (a, b) {
+      if (curSort === 'new')  return addedOf(b) - addedOf(a);
+      if (curSort === 'old')  return addedOf(a) - addedOf(b);
+      if (curSort === 'year-desc') return yearOf(b) - yearOf(a) || addedOf(b) - addedOf(a);
+      return yearOf(a) - yearOf(b) || addedOf(a) - addedOf(b);
+    });
+    vis.forEach(function (li) { list.appendChild(li); });
+  }
+
+  cloud.addEventListener('click', function (e) {
+    var btn = e.target.closest('.year-pill');
+    if (!btn) return;
+    cloud.querySelectorAll('.year-pill').forEach(function (p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    curYear = btn.dataset.year;
+    apply();
+  });
+
+  bar.addEventListener('click', function (e) {
+    var btn = e.target.closest('.sort-pill');
+    if (!btn) return;
+    bar.querySelectorAll('.sort-pill').forEach(function (p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    curSort = btn.dataset.sort;
+    apply();
+  });
+
+  apply();   // при загрузке: новые публикации сверху
+})();
+</script>
+
+<footer class="g-footer">
+  <div class="g-copy">
+    <img src="/favicon-32x32.png" width="18" height="18" alt="Герб Харченберг">
+    <span>&copy; 2026 Никита Нэйтан Харченберг &middot; составление и реконструкция</span>
+  </div>
+  <div class="g-footright">
+    <span id="g-visits" class="g-visits"></span>
+    <a href="https://metrika.yandex.ru/stat/?id=111205749&amp;from=informer" target="_blank" rel="nofollow noopener"><img src="https://informer.yandex.ru/informer/111205749/1_0_FFFEF0FF_E5DED0FF_0_uniques" width="80" height="15" style="border:0;display:block" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (уникальные посетители)"></a>
+  </div>
+</footer>
+<script src="/footer.js" defer></script>
+</body>
+</html>

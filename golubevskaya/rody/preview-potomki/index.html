@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Потомки о роде - финальная верстка</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="stylesheet" href="/style.css?v=6e803b7e">
+<style>
+.wrapx{max-width:820px;margin:0 auto;padding:24px}
+.vh{margin:30px 0 8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PT Sans",sans-serif;
+    font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.vnote{font-size:.86rem;color:var(--ink-dim);margin:0 0 12px;line-height:1.5}
+.frame{border:1px dashed var(--rule);padding:16px;border-radius:3px;background:var(--paper)}
+
+.g-origin{border-left:3px solid var(--accent);background:var(--card);padding:10px 16px;margin:0 0 18px}
+.g-origin h3{margin:0 0 4px;font-size:.98em}
+.g-origin p{margin:4px 0;font-size:.95em}
+
+/* блок «Потомки о роде» */
+.g-tales{border-left:3px solid var(--accent-2);background:var(--card);padding:10px 16px;margin:0 0 18px}
+.g-tales h3{margin:0 0 6px;font-size:.98em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.g-tales .cnt{font-weight:400;font-size:.82em;color:var(--ink-dim)}
+.g-taleslist{max-height:120px;overflow-y:auto;padding-right:6px}
+.g-taleslist::-webkit-scrollbar{width:6px}
+.g-taleslist::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
+.g-tale{margin:0 0 12px;font-size:.93em;line-height:1.5}
+.g-tale:last-child{margin-bottom:0}
+.g-tale q{quotes:"«" "»"}
+.g-tale .a{color:var(--ink-dim);font-size:.86em}
+
+/* кнопка-пилюля: те же краски, радиус, ховер и ТА ЖЕ типографика, что у плитки */
+.g-tell{margin-left:auto;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:3px;
+  background:var(--paper-2);color:var(--ink-dim);cursor:pointer;font:inherit;
+  font-size:10px;line-height:1.25;font-weight:400;padding:7px 12px;white-space:nowrap}
+.g-tell .pl{font-size:15px;line-height:1}
+.g-tell:hover{color:var(--accent);background:var(--rule)}
+
+/* лента фото - как на сайте */
+.g-foto{display:flex;gap:10px;overflow-x:auto;margin:0 0 10px;padding-bottom:6px}
+.g-foto img.ph{height:120px;width:auto;border:1px solid var(--rule);border-radius:2px}
+.g-addfoto{flex:0 0 auto;width:92px;height:120px;border:0;border-radius:3px;
+  background:var(--paper-2);color:var(--ink-dim);cursor:pointer;font:inherit;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.g-addfoto .pl{font-size:24px;line-height:1}
+.g-addfoto .cap{font-size:10px;line-height:1.25;max-width:74px;text-align:center}
+.g-addfoto:hover{color:var(--accent);background:var(--rule)}
+</style>
+<!-- og:auto -->
+<meta property="og:site_name" content="Fundus">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://fundus.hartschenberg.de/golubevskaya/rody/preview-potomki/">
+<meta property="og:title" content="Потомки о роде - финальная верстка">
+<meta property="og:image" content="https://fundus.hartschenberg.de/og-default.png">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /og:auto -->
+</head>
+<body>
+<div class="wrapx">
+<h1 style="font-size:1.5rem;margin:0 0 6px">Потомки о роде</h1>
+<p class="vnote">Финальный вид: вариант A, текст кнопки той же типографики, что подписи на плитках
+(Georgia 10px/1.25). Блок фиксированной высоты (видно два рассказа), дальше прокрутка.</p>
+
+<p class="vh">Как это выглядит на странице рода</p>
+<div class="frame">
+  <section class="g-origin"><h3>Место исхода</h3>
+    <p>Томская губерния, Богородская волость (1876, крестьяне). До этого Воронежская.</p></section>
+
+  <section class="g-tales">
+    <h3>Потомки о роде <span class="cnt">4 рассказа</span>
+      <button class="g-tell"><span class="pl">+</span> Хочу рассказать</button></h3>
+    <div class="g-taleslist">
+      <p class="g-tale"><q>Прадед держал кузню у самой реки, к нему съезжались со всей округи.
+        Отец помнил запах гари и то, как дед не брал денег с вдов.</q>
+        <span class="a">— Е. Ступкина, правнучка</span></p>
+      <p class="g-tale"><q>В семье говорили, что фамилия пошла от прозвища «ступка»: деда так
+        прозвали за малый рост и крепость.</q> <span class="a">— Краткая справка генеалога</span></p>
+      <p class="g-tale"><q>Часть семьи ушла в Чунджу после 1907 года, там и осели.</q>
+        <span class="a">— П. Ступкин, праправнук</span></p>
+      <p class="g-tale"><q>Бабушка вспоминала большой дом с резными наличниками у самой воды.</q>
+        <span class="a">— М. Ковалёва, праправнучка</span></p>
+    </div>
+  </section>
+
+  <div class="g-foto">
+    <img class="ph" src="/favicon-192x192.png" alt="">
+    <button class="g-addfoto"><span class="pl">+</span><span class="cap">у меня есть фото</span></button>
+    <button class="g-addfoto"><span class="pl">+</span><span class="cap">рассказать о роде</span></button>
+  </div>
+</div>
+
+<p class="vh">Если рассказов ещё нет</p>
+<p class="vnote">Блок «Потомки о роде» не показывается совсем. Кнопка живёт только в ленте фото.</p>
+<div class="frame">
+  <section class="g-origin"><h3>Место исхода</h3>
+    <p>Место исхода рода пока не установлено.</p></section>
+  <div class="g-foto">
+    <button class="g-addfoto"><span class="pl">+</span><span class="cap">у меня есть фото</span></button>
+    <button class="g-addfoto"><span class="pl">+</span><span class="cap">рассказать о роде</span></button>
+  </div>
+</div>
+
+<p class="vnote" style="margin-top:28px">Страница временная, служебная, закрыта от индексации.</p>
+</div>
+</body>
+</html>

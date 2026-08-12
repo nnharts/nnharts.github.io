@@ -1,0 +1,958 @@
+:root {
+  --paper: #efeae0;
+  --paper-2: #e5ded0;
+  --card: #f6f2e9;
+  --ink: #2a2620;
+  --ink-dim: #6b6455;
+  --rule: #cabf9f;
+  --accent: #8c2f2f;
+  --accent-ink: #fbf2ea;
+  --accent-2: #3a4d3f;
+  --read: #5a7a5f;          /* кнопка «Читать»: светлее accent-2, заметна рядом с терракотовой */
+  --focus: #2a5b8c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1a1611;
+    --paper-2: #221c15;
+    --card: #221c15;
+    --ink: #ece3d0;
+    --ink-dim: #a89b80;
+    --rule: #3d3424;
+    --accent: #c85a48;
+    --accent-ink: #1a1611;
+    --accent-2: #6f8f78;
+    --read: #7fa085;
+    --focus: #7fb0e0;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1a1611;
+  --paper-2: #221c15;
+  --card: #221c15;
+  --ink: #ece3d0;
+  --ink-dim: #a89b80;
+  --rule: #3d3424;
+  --accent: #c85a48;
+  --accent-ink: #1a1611;
+  --accent-2: #6f8f78;
+  --focus: #7fb0e0;
+}
+:root[data-theme="light"] {
+  --paper: #efeae0;
+  --paper-2: #e5ded0;
+  --card: #f6f2e9;
+  --ink: #2a2620;
+  --ink-dim: #6b6455;
+  --rule: #cabf9f;
+  --accent: #8c2f2f;
+  --accent-ink: #fbf2ea;
+  --accent-2: #3a4d3f;
+  --focus: #2a5b8c;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: Georgia, "PT Serif", "Noto Serif", "Times New Roman", serif;
+  line-height: 1.5;
+}
+
+a { color: inherit; }
+
+.sans {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+}
+
+/* site-wide nav */
+.site-nav {
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.site-nav-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Широкие страницы (справочник родов, места исхода) держат контент в 1160px,
+   и полоса меню в 880px выглядела уже основного текста. Отступ по бокам тот же
+   24px, поэтому края меню и контента совпадают ровно. */
+.site-nav--wide .site-nav-inner {
+  max-width: 1160px;
+}
+
+.brand {
+  font-family: Georgia, "PT Serif", "Noto Serif", serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.brand small {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-weight: 400;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+
+.crumb {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+  text-decoration: none;
+}
+.crumb:hover { color: var(--ink); }
+
+.section-links {
+  display: flex;
+  gap: 22px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.82rem;
+}
+
+.section-link {
+  color: var(--ink-dim);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+.section-link:hover { color: var(--ink); }
+.section-link.active {
+  color: var(--ink);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+.section-link.disabled {
+  color: var(--rule);
+  cursor: default;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .site-nav-inner { flex-wrap: wrap; }
+  /* без переноса пункты меню вылезали за экран и вся страница ездила вбок */
+  .section-links { order: 3; width: 100%; gap: 12px 18px; flex-wrap: wrap; }
+}
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+header.page {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 28px;
+  margin-bottom: 8px;
+}
+
+.eyebrow {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+
+h1 {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  margin: 0 0 10px;
+  text-wrap: balance;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.dek {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  color: var(--ink-dim);
+  max-width: 62ch;
+  font-size: 0.98rem;
+  margin: 0 0 18px;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+}
+
+.meta-row b {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* expert strip */
+.expert {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 28px 0 40px;
+}
+
+.familio-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+.familio-link:hover { border-bottom-color: var(--ink); }
+
+.familio-icon {
+  vertical-align: -3px;
+  margin-right: 5px;
+}
+
+.expert-seal {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  object-fit: cover; /* когда .expert-seal - <img> с фото эксперта, а не div-заглушка */
+}
+
+.expert-text {
+  flex: 1;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.9rem;
+  color: var(--ink-dim);
+}
+
+.expert-text strong {
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+
+.expert-text a { color: var(--focus); }
+.expert-text a.familio-link { color: var(--ink); }
+
+section.register { margin-top: 12px; }
+
+.year-group {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin: 34px 0 10px;
+  padding-top: 6px;
+}
+.year-group:first-of-type { margin-top: 6px; }
+
+ul.dela { list-style: none; margin: 0; padding: 0; }
+
+li.delo {
+  display: grid;
+  grid-template-columns: 108px 1fr auto;
+  align-items: start;
+  gap: 4px 20px;
+  padding: 16px 4px;
+  border-top: 1px solid var(--rule);
+}
+li.delo:last-child { border-bottom: 1px solid var(--rule); }
+
+.years {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+  padding-top: 3px;
+}
+
+.body-col { min-width: 0; }
+
+.code {
+  display: inline-block;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+  color: var(--accent-2);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 2px 7px;
+  margin-bottom: 7px;
+}
+
+/* тип-плашка для не-архивных источников (рукописи и т.п.), рядом с .code:
+   тот же размер/позиция, но заливка вместо моноширинного шифра дела -
+   разница между "документ с архивным шифром" и "личный источник" видна сразу */
+.doc-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 3px;
+  padding: 3px 8px;
+  margin-bottom: 7px;
+}
+.doc-type-manuscript {
+  background: color-mix(in srgb, var(--accent-2) 18%, var(--card));
+  color: var(--accent-2);
+}
+
+.title { font-size: 1.02rem; line-height: 1.45; margin: 0; }
+
+.note {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.order-btn {
+  align-self: center;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: none;
+  border-radius: 3px;
+  padding: 9px 16px;
+  text-decoration: none;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.order-btn:hover { filter: brightness(1.08); }
+.order-btn:active { transform: translateY(1px); }
+.order-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* заголовок дела как ссылка: цель крупнее кнопки, попасть проще (закон Фиттса),
+   кнопка остаётся явным призывом и ведёт туда же */
+.title-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.title-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.title-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.read-btn {
+  background: var(--read);
+  color: #ffffff;
+}
+
+/* memorial table (repression lists etc.) */
+.memorial-wrap { overflow-x: auto; margin-top: 28px; }
+
+table.memorial {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.9rem;
+}
+
+table.memorial caption {
+  caption-side: top;
+  text-align: left;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 10px;
+}
+
+table.memorial th {
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  font-weight: 600;
+  padding: 0 14px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+table.memorial td {
+  padding: 11px 14px 11px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+table.memorial td.name { font-family: Georgia, "PT Serif", "Noto Serif", serif; font-weight: 700; }
+table.memorial td.year { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink-dim); }
+table.memorial td.place { color: var(--ink-dim); }
+table.memorial tr:last-child td { border-bottom: none; }
+
+.source-note {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+  margin-top: 18px;
+  font-style: italic;
+}
+
+footer.other {
+  margin-top: 56px;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.86rem;
+  color: var(--ink-dim);
+}
+footer.other h2 {
+  font-family: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+footer.other .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+footer.other .tags span {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 4px 9px;
+}
+
+/* index / settlement register */
+ul.settlements { list-style: none; margin: 24px 0 0; padding: 0; }
+
+li.settlement {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 6px 20px;
+  padding: 20px 4px;
+  border-top: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+}
+li.settlement:last-child { border-bottom: 1px solid var(--rule); }
+
+.settlement-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.settlement-region {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.84rem;
+  color: var(--ink-dim);
+}
+
+.status {
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 5px 12px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.status.ready {
+  background: var(--accent-2);
+  color: var(--accent-ink);
+}
+.status.pending {
+  background: var(--paper-2);
+  color: var(--ink-dim);
+  border: 1px solid var(--rule);
+}
+
+.status-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.updated {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.74rem;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+a.settlement-link { text-decoration: none; }
+a.settlement-link:hover .settlement-name { color: var(--accent); }
+
+/* year tag-cloud filter */
+.year-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 0;
+}
+.year-pill {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  background: var(--paper-2);
+  color: var(--ink-dim);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.year-pill:hover { color: var(--ink); }
+.year-pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+li.entry.hidden { display: none; }
+
+/* generic entry list (Zeitungsecke / Notizen / Geschichten indexes) */
+ul.entry-list { list-style: none; margin: 24px 0 0; padding: 0; }
+
+li.entry {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 6px 20px;
+  padding: 20px 4px;
+  border-top: 1px solid var(--rule);
+}
+li.entry:last-child { border-bottom: 1px solid var(--rule); }
+
+a.entry-link { text-decoration: none; color: inherit; }
+a.entry-link:hover .entry-title { color: var(--accent); }
+
+.entry-title { font-size: 1.15rem; font-weight: 700; margin: 0 0 4px; }
+
+.entry-meta {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.84rem;
+  color: var(--ink-dim);
+}
+
+/* newspaper-clipping detail page */
+.clip-year {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.clipping-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  margin: 28px 0 10px;
+  background: var(--card);
+}
+
+.clipping-caption {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.84rem;
+  color: var(--ink-dim);
+  margin: 0 0 28px;
+}
+
+.clip-stack { margin-top: 12px; }
+.clip-block {
+  max-width: 620px;
+  margin: 0 0 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--rule);
+}
+.clip-block:last-child { border-bottom: none; margin-bottom: 0; }
+.clip-block .clipping-caption { margin-bottom: 14px; }
+.clip-block .transcript { margin-bottom: 10px; }
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 22px;
+  margin: 28px 0 32px;
+}
+.gallery-item a {
+  display: block;
+  border-radius: 3px;
+}
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--card);
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.gallery-item a:hover img {
+  opacity: 0.85;
+  border-color: var(--accent);
+}
+.gallery-item .clipping-caption {
+  margin: 8px 0 0;
+}
+
+.transcript {
+  border-left: 3px solid var(--rule);
+  padding-left: 18px;
+  margin: 0 0 32px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.attribution {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.86rem;
+  color: var(--ink-dim);
+  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+  margin-top: 8px;
+}
+
+.attribution .sig-link {
+  font-size: 0.78rem;
+  opacity: 0.5;
+  color: var(--ink-dim);
+}
+.attribution .sig-link:hover { opacity: 0.85; }
+
+.family-history {
+  margin-top: 44px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+  max-width: 62ch;
+}
+.family-history .eyebrow { margin-bottom: 8px; }
+.family-history h2 {
+  font-size: 1.4rem;
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+.family-history p {
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+.family-children {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+  columns: 2;
+  gap: 24px;
+}
+.family-children li { margin-bottom: 6px; break-inside: avoid; }
+.family-history .note { margin-top: 8px; }
+
+.empty-state {
+  margin-top: 60px;
+  padding: 40px 24px;
+  text-align: center;
+  border: 1px dashed var(--rule);
+  border-radius: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  color: var(--ink-dim);
+}
+.empty-state a { color: var(--focus); }
+
+@media (max-width: 620px) {
+  li.delo { grid-template-columns: 1fr; gap: 8px; }
+  .years { padding-top: 0; }
+  .order-btn { justify-self: start; }
+  li.settlement { grid-template-columns: 1fr; }
+}
+
+/* DNA-Spurensuche case sheet */
+.case-status {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-bottom: 6px;
+}
+.case-status.solved { background: var(--accent-2); color: var(--accent-ink); }
+.case-status.progress { background: var(--paper-2); color: var(--ink-dim); border: 1px solid var(--rule); }
+
+.case-sheet {
+  margin-top: 28px;
+  border-top: 1px solid var(--rule);
+}
+.case-field {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 8px 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.case-field dt {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin: 0;
+}
+.case-field dd {
+  margin: 0;
+  line-height: 1.6;
+}
+.case-field dd p { margin: 0 0 10px; }
+.case-field dd p:last-child { margin-bottom: 0; }
+
+@media (max-width: 620px) {
+  .case-field { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* Quellen resource list */
+li.resource {
+  display: block;
+  padding: 20px 4px;
+  border-top: 1px solid var(--rule);
+}
+li.resource:last-child { border-bottom: 1px solid var(--rule); }
+
+.resource-type {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  background: var(--paper-2);
+  color: var(--ink-dim);
+  border: 1px solid var(--rule);
+}
+
+.resource-desc { margin: 10px 0 0; line-height: 1.6; }
+.resource-desc p { margin: 0 0 10px; }
+.resource-desc p:last-child { margin-bottom: 0; }
+
+.video-embed {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  margin: 12px 0 0;
+  background: var(--ink);
+}
+.video-embed iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.resource-desc blockquote.objections {
+  border-left: 3px solid var(--rule);
+  padding-left: 18px;
+  margin: 0 0 10px;
+  font-style: italic;
+  color: var(--ink-dim);
+}
+.resource-desc blockquote.objections p { margin: 0 0 10px; }
+.resource-desc blockquote.objections p:last-child { margin-bottom: 0; }
+
+.thesis {
+  display: block;
+  font-family: Georgia, "PT Serif", "Noto Serif", serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  line-height: 1.4;
+  color: var(--accent);
+  margin: 4px 0;
+}
+
+.resource-desc .signature {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  font-family: Georgia, "PT Serif", "Noto Serif", serif;
+  font-style: italic;
+  color: var(--ink-dim);
+}
+
+.signature-block {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+.signature-block img {
+  width: 440px;
+  max-width: 90%;
+  height: auto;
+  margin-top: 8px;
+}
+.signature-block .sig-name {
+  font-family: Georgia, "PT Serif", "Noto Serif", serif;
+  font-style: italic;
+  color: var(--ink-dim);
+  font-size: 0.9rem;
+}
+@media (prefers-color-scheme: dark) {
+  .signature-block img { filter: invert(1); }
+}
+:root[data-theme="dark"] .signature-block img { filter: invert(1); }
+:root[data-theme="light"] .signature-block img { filter: none; }
+
+/* Quellen index list with thumbnails */
+a.entry-link.with-thumb {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+a.entry-link.with-thumb .entry-text { flex: 1 1 auto; min-width: 0; }
+.entry-thumb {
+  flex: 0 0 auto;
+  width: 84px;
+  height: 84px;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--card);
+}
+.entry-annotation {
+  margin: 8px 0 0;
+  color: var(--ink-dim);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+@media (max-width: 560px) {
+  a.entry-link.with-thumb { gap: 12px; }
+  .entry-thumb { width: 56px; height: 56px; }
+}
+
+/* annotation callout (Gelöste Familienrätsel) */
+.annotation-box {
+  background: var(--paper-2);
+  border-left: 3px solid var(--accent-2);
+  padding: 18px 20px;
+  margin: 24px 0;
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+.annotation-box p { margin: 0 0 10px; }
+.annotation-box p:last-child { margin-bottom: 0; }
+
+/* text/video toggle */
+.toggle-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 24px;
+}
+.toggle-tab {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 8px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  background: var(--paper-2);
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+.toggle-tab.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+.toggle-panel { display: none; }
+.toggle-panel.active { display: block; }
+
+/* на телефоне плашка с генеалогом уходит в конец страницы: сверху человек
+   пришёл читать сам реестр, а предложение услуги уместно после материала */
+@media (max-width: 620px) {
+  .wrap { display: flex; flex-direction: column; }
+  .wrap > .expert { order: 99; margin: 32px 0 8px; }
+}
+
+/* подвал сайта: слева копирайт с гербом, справа посещаемость и бейдж Метрики */
+.g-footer{max-width:1160px;margin:0 auto;padding:14px 24px 24px;
+  border-top:1px solid var(--rule);display:flex;align-items:center;
+  justify-content:space-between;gap:10px 20px;flex-wrap:wrap;
+  font-size:.76rem;color:var(--ink-dim);letter-spacing:.02em}
+.g-copy{display:flex;align-items:center;gap:8px}
+.g-copy img{opacity:.9;flex:0 0 auto}
+.g-copy a{color:inherit}
+.g-footright{display:flex;align-items:center;gap:14px;margin-left:auto}
+.g-visits{min-height:1em}
+@media(max-width:560px){
+  .g-footer{justify-content:flex-start}
+  .g-footright{margin-left:0;width:100%}
+}
+
+/* Герб в шапке. Ставим фоном, а не картинкой в разметке: так он появляется
+   сразу на всех 60 страницах, без правки каждой. */
+.brand {
+  padding-left: 46px;
+  background: url(/crest-sepia.png) left center / auto 34px no-repeat;
+}
+
+/* Возврат на предыдущую страницу: терракотовым и со стрелкой, которая раз
+   в 4 секунды уезжает влево и возвращается. Уважает reduced motion. */
+.crumb { color: var(--accent); }
+.crumb:hover { opacity: .75; }
+.crumb-a { display: inline-block; }
+@keyframes crumb-fly {
+  0%, 72%, 100% { transform: translateX(0); opacity: 1 }
+  78% { transform: translateX(-5px) }
+  84% { transform: translateX(-12px); opacity: 0 }
+  85% { transform: translateX(8px); opacity: 0 }
+  92% { transform: translateX(0); opacity: 1 }
+}
+.crumb-a { animation: crumb-fly 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .crumb-a { animation: none } }
