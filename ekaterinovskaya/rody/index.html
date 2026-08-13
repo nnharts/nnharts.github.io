@@ -256,6 +256,8 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
 .e-source-link,.e-source-ref{display:inline-flex;align-items:center;gap:3px;vertical-align:-.18em;white-space:nowrap;margin-left:3px}
 .e-source-link{color:var(--accent);text-decoration:none}
 .e-source-link:hover{color:var(--accent);text-decoration:none}
+.e-source-ask{cursor:pointer}
+.e-source-ask:hover{color:var(--ink)}
 .e-person-link{color:var(--accent);text-decoration:underline dotted 1px;text-decoration-color:var(--accent);cursor:pointer}
 .e-person-flash{animation:e-person-flash 2s ease-out}
 @keyframes e-person-flash{0%{background:var(--accent-2,var(--accent));opacity:.35}100%{background:transparent}}
@@ -341,6 +343,24 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
   </div>
 
 </div>
+
+<div class="g-fmodal" id="g-smodal"><div class="box">
+  <button class="close" onclick="document.getElementById('g-smodal').classList.remove('on')">&#10005;</button>
+  <h3 style="margin:0 0 4px" id="g-stitle">Скан архивного листа</h3>
+  <div class="g-clanmeta" id="g-sdesc" style="margin:0 0 10px"></div>
+  <p style="font-size:.9em;margin:0 0 4px">Лист известен по документу, но цифровой копии
+  на сайте пока нет. Мы можем получить её в архиве. Оставьте свои контакты, и мы вышлем
+  Вам скан высокого разрешения.</p>
+  <form id="g-sform">
+    <label>Ваше имя *</label><input name="name" required maxlength="100">
+    <label>Ваш e-mail *</label><input name="email" type="email" required maxlength="200">
+    <label>WhatsApp или ник в Telegram</label><input name="messenger" maxlength="200" placeholder="+49... или @nickname">
+    <button class="send" type="submit">Отправить запрос</button>
+    <div id="g-smsg"></div>
+  </form>
+  <div class="g-clanmeta" style="margin-top:12px">Или закажите через
+  <a href="https://market.familio.org/expert/nikita-neytan-kharchenberg/" target="_blank" rel="noopener noreferrer">профиль эксперта на Familio</a>.</div>
+</div></div>
 
 <div class="g-fmodal" id="g-submodal"><div class="box">
   <button class="close" onclick="document.getElementById('g-submodal').classList.remove('on')">&#10005;</button>
@@ -464,6 +484,35 @@ const CLAN_NOTES={"харченко": "В станице Екатериновс�
 const DNA_CLANS=["стасюк", "сусь", "харченко", "косуля"];
 const SUB_BOT='Hartschenberg_tracking_bot';
 const FOTO_API='/golubevskaya/foto-api';
+
+// Серый значок листа: скана на сайте нет, но лист известен. Открываем ту же
+// форму запроса, что у платных метрик Голубевской: заявка уходит на
+// /contact-author с пометкой «ЗАПРОС СКАНА». Правило Никиты 13.08.2026:
+// терракотовый значок открывает документ, серый ведёт в форму.
+let scanRef='';
+function openScanRequest(src, note){
+  document.getElementById('g-stitle').textContent=src||'Скан архивного листа';
+  document.getElementById('g-sdesc').textContent=note||'';
+  document.getElementById('g-smsg').textContent='';
+  scanRef=[src,note].filter(Boolean).join(' — ');
+  if(typeof ym==='function') ym(111205749,'reachGoal','zapros_skana');
+  document.getElementById('g-smodal').classList.add('on');
+}
+document.getElementById('g-sform').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const fd=new FormData(ev.target);
+  fd.append('photo','ЗАПРОС СКАНА (Екатериновская): '+scanRef);
+  const msg=document.getElementById('g-smsg');
+  msg.textContent='Отправка...';
+  try{
+    const r=await fetch(`${FOTO_API}/contact-author`,{method:'POST',body:fd});
+    const j=await r.json();
+    if(j.ok){msg.className='ok';msg.textContent='Запрос отправлен! Подтверждение выслано на ваш e-mail, генеалог свяжется с вами.';ev.target.reset();}
+    else{msg.className='';msg.textContent=j.error||'Ошибка, попробуйте ещё раз.';}
+  }catch(e){msg.className='';msg.textContent='Сеть недоступна, попробуйте позже.';}
+});
+const FOTO_API_MARK=1;
+
 const FAMILIO_EXPERT='https://market.familio.org/expert/nikita-neytan-kharchenberg/';
 const ICON_DNA=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.55"><path d="M9 3h6M10 3v7.5L5.8 18a3 3 0 0 0 2.6 4.5h7.2A3 3 0 0 0 18.2 18L14 10.5V3"/><path d="M8.5 15h7"/></svg>`;
 const ICON_CAM=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.55"><path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3"/></svg>`;
@@ -849,7 +898,12 @@ function srcLine(srcs,compact=false){
       const before=sheet[1].replace(/,\s*$/,'');
       if(before) tail+=` <span class="y">${esc(before)},</span>`;
       if(s[2]) tail+=` <a class="e-source-link" href="${esc(s[2])}" target="_blank" rel="noopener" title="Открыть ${esc(sheet[2])}" aria-label="Открыть ${esc(sheet[2])}">${ICON_SCROLL}<span>${esc(sheet[2])}</span></a>`;
-      else if(doc) tail+=` <span class="e-source-ref">${ICON_SCROLL}<span>${esc(sheet[2])}</span></span>`;
+      // Значения кладём в data-атрибуты: подставлять их прямо в onclick нельзя,
+      // кавычки из названия источника рвут html-атрибут. Поймано 13.08.2026.
+      else if(doc) tail+=` <span class="e-source-ref e-source-ask" title="Запросить скан листа"`
+        +` data-src="${esc(t)}" data-note="${esc(note)}"`
+        +` onclick="event.stopPropagation();openScanRequest(this.dataset.src,this.dataset.note)"`
+        +`>${ICON_SCROLL}<span>${esc(sheet[2])}</span></span>`;
       else tail+=` <span class="y">${esc(sheet[2])}</span>`;
     }else{
       tail=(doc?ICON_SCROLL+' ':'')+(note?` <span class="y">${esc(note)}</span>`:'');
