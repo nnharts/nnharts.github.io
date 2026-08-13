@@ -9,6 +9,234 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="stylesheet" href="/style.css?v=6e803b7e">
 <style>
+/* локальные стили справочника, поверх общего style.css; префикс g- против коллизий */
+.g-wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.g-stats{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 8px}
+.g-stats b{font-size:1.3em;display:block}
+.g-statsrow{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+.g-stats2{justify-content:flex-end;text-align:right}
+.g-stats span{color:var(--ink-dim);font-size:.72em;text-transform:uppercase;letter-spacing:.08em;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PT Sans",sans-serif}
+.g-cols{display:flex;gap:0;align-items:stretch;border-top:2px solid var(--ink);margin-top:14px}
+.g-side{width:264px;flex:0 0 264px;border-right:1px solid var(--rule);padding:14px 0 40px}
+.g-search{padding:0 14px 10px}
+/* стили подвала - в общем style.css (.g-footer) */
+.g-search input{width:100%;padding:7px 10px;border:1px solid var(--rule);background:var(--card);
+  color:var(--ink);font:inherit;font-size:.9em;border-radius:2px}
+.g-search input:focus{outline:2px solid var(--focus);outline-offset:1px}
+.g-clans{list-style:none;margin:0;padding:0;max-height:74vh;overflow-y:auto}
+.g-clans li{padding:5px 16px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;
+  border-left:3px solid transparent}
+.g-clans li:hover{background:var(--paper-2)}
+.g-clans li.on{border-left-color:var(--accent);background:var(--paper-2);font-weight:700}
+.g-clans .n{color:var(--ink-dim)}
+.g-side-h{margin:24px 0 6px;padding:14px 16px 0;border-top:2px solid var(--ink);
+  font-size:.78em;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-dim)}
+.g-mono{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:.82em}
+.g-main{flex:1;min-width:0;padding:20px 0 80px 26px}
+.g-clan-h{font-size:clamp(20px,2.6vw,27px);margin:4px 0 2px;font-weight:700}
+.g-clan-h .var{font-size:.6em;color:var(--ink-dim);font-style:italic;font-weight:400}
+.g-clanmeta{color:var(--ink-dim);font-size:.9em;margin-bottom:14px}
+.g-note{font-size:.85em;color:var(--ink-dim);font-style:italic;margin:0 0 16px}
+.g-fam{background:var(--card);border:1px solid var(--rule);border-top:2px solid var(--ink-dim);
+  padding:12px 16px;margin:0 0 14px;border-radius:2px;position:relative}
+.g-fam.child{margin-left:calc(var(--d,1)*34px)}
+.g-origin{border-left:3px solid var(--accent);background:var(--card);padding:10px 16px;margin:0 0 18px}
+.g-origin h3{margin:0 0 4px;font-size:.98em}
+.g-origin p{margin:4px 0;font-size:.95em}
+.g-clanhead{display:flex;align-items:baseline;gap:8px 14px;
+  flex-wrap:wrap;min-width:0}
+.g-clan-h{overflow-wrap:anywhere;min-width:0}
+.g-actions{display:flex;align-items:baseline;gap:14px;margin-left:auto;flex:0 0 auto}
+.g-sub{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;
+  color:var(--accent);cursor:pointer;font:inherit;font-size:.85em;line-height:1.2;
+  padding:10px 0 10px 12px;white-space:nowrap;position:relative;z-index:5;
+  -webkit-tap-highlight-color:rgba(140,47,47,.15)}
+.g-sub:hover{opacity:.75}
+/* самолётик раз в шесть секунд улетает и возвращается: привлекает взгляд к подписке.
+   Уважает reduced motion: у кого анимации отключены, тем не мигаем */
+@keyframes g-sub-fly{0%,72%,100%{transform:translate(0,0) rotate(0);opacity:1}
+  78%{transform:translate(7px,-6px) rotate(-14deg)}
+  84%{transform:translate(16px,-13px) rotate(-14deg);opacity:0}
+  85%{transform:translate(-10px,8px) rotate(0);opacity:0}
+  92%{transform:translate(0,0) rotate(0);opacity:1}}
+/* цвет самолётика: терракотовый в покое, плавно синеет к моменту взлёта (телеграмный
+   #229ED9 ровно на пике 78%), держит синий, пока летит, и мгновенно (пока невидим,
+   opacity:0) возвращается к терракотовому - чтобы не мигать цветом на возврате */
+@keyframes g-sub-color{0%,60%,100%{color:var(--accent)}
+  78%,84%{color:#229ED9}
+  85%{color:var(--accent)}}
+.g-sub svg{animation:g-sub-fly 4s ease-in-out infinite,g-sub-color 4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.g-sub svg{animation:none}}
+.g-share svg{animation:none}
+.g-sub svg{flex:0 0 auto}
+.g-subalt{font-size:11px;color:var(--ink-dim);margin:14px 0 0}
+.g-subalt input{font-size:12px}
+.g-godlist .g-godtxt{color:var(--ink-dim);font-size:.9em;font-style:italic}
+.g-godlist .g-godgroup{margin-top:14px;padding:7px 0 4px;border-bottom:1px solid var(--rule)}
+.g-godlist .g-godgroup:first-child{margin-top:0}
+.g-godlist .g-godgroup .cnt{color:var(--ink-dim);font-size:.82em;font-weight:400}
+.g-tales{border-left:3px solid var(--accent-2,var(--accent));background:var(--card);padding:10px 16px;margin:0 0 18px}
+.g-tales h3{margin:0 0 6px;font-size:.98em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.g-tales .cnt{font-weight:400;font-size:.82em;color:var(--ink-dim)}
+/* Метка вида «Инсайты из документов»: отличает разбор по метрикам от
+   воспоминаний потомков в том же блоке. Просьба Никиты 11.08.2026. */
+.g-talelabel{display:inline-block;font-size:.72em;letter-spacing:.04em;text-transform:uppercase;
+border:1px solid var(--rule);border-radius:2px;padding:1px 6px;margin-right:4px;color:var(--ink-dim);vertical-align:1px}
+.g-taleslist{max-height:210px;overflow-y:auto;padding-right:6px;-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent 100%);mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent 100%)}
+.g-taleslist::-webkit-scrollbar{width:7px}
+.g-taleslist::-webkit-scrollbar-track{background:transparent}
+.g-taleslist::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent) 45%,var(--card));border-radius:4px}
+.g-taleslist::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+/* Свой бегунок для мобильных. Системная полоса там всплывающая: мелькает во
+   время прокрутки и не стилизуется, поэтому блок выглядел просто обрезанным,
+   и было непонятно, что он листается. Просьба Никиты 11.08.2026, вариант с
+   подвижным бегунком - как на десктопе. На широких экранах не показываем,
+   иначе рядом окажутся две полосы. */
+.g-tales{position:relative}
+.g-talesrail,.g-talesthumb{display:none}
+@media(max-width:760px){
+  .g-taleslist{padding-right:14px}
+  .g-taleslist::-webkit-scrollbar{width:0}
+  .g-talesrail{display:block;position:absolute;right:6px;width:4px;border-radius:2px;
+    background:color-mix(in srgb,var(--accent) 16%,transparent);pointer-events:none}
+  .g-talesthumb{display:block;position:absolute;right:6px;width:4px;border-radius:2px;
+    background:var(--accent);pointer-events:none;transition:top .08s linear}
+}
+.g-tale{margin:0 0 12px;font-size:.93em;line-height:1.5}
+.g-linkbox{margin-top:8px;padding:8px 10px;background:var(--card);border:1px solid var(--rule);
+border-radius:3px;max-width:340px}
+.g-linkbox-lab{font-size:.78em;color:var(--ink-dim);margin-bottom:4px}
+.g-linkbox input{width:100%;font:inherit;font-size:.86em;padding:4px 6px;border:1px solid var(--rule);
+background:var(--paper);color:var(--ink);border-radius:2px}
+.g-tale q{quotes:"«" "»"}
+.g-tale .a{color:var(--ink-dim);font-size:.86em}
+.g-tedit{border:0;background:transparent;color:var(--ink-dim);cursor:pointer;
+  padding:6px 8px;margin-left:2px;line-height:0;vertical-align:-3px;border-radius:3px;
+  -webkit-tap-highlight-color:rgba(140,47,47,.15)}
+.g-tedit:hover{color:var(--accent);background:var(--rule)}
+/* Значок «попали в газету» у персоны: он кликабельный, в отличие от серых
+   значков-пометок в списке родов, поэтому терракотовый, цветом ссылок.
+   Замечание Никиты 12.08.2026. */
+.g-newsmark{color:var(--accent);text-decoration:none;white-space:nowrap}
+.g-newsmark:hover{opacity:.75}
+.g-tell{margin-left:auto;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:3px;
+  background:var(--paper-2);color:var(--ink-dim);cursor:pointer;font:inherit;
+  font-size:10px;line-height:1.25;font-weight:400;padding:7px 12px;white-space:nowrap}
+.g-tell .pl{font-size:15px;line-height:1}
+.g-tell:hover{color:var(--accent);background:var(--rule)}
+.g-foto{display:flex;gap:10px;overflow-x:auto;margin:0 0 18px;padding-bottom:6px}
+.g-foto a{flex:0 0 auto;line-height:0;min-width:82px}
+/* min-width держит ширину карточки до того, как доедет сама картинка:
+   иначе размеры ленты в этот момент нулевые и расчёт места плашки врёт. */
+.g-foto img{height:120px;width:auto;border:1px solid var(--rule);border-radius:2px}
+.g-addfoto{flex:0 0 auto;width:92px;height:120px;border:0;border-radius:3px;
+  background:var(--paper-2);color:var(--ink-dim);cursor:pointer;font:inherit;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.g-addfoto .pl{font-size:24px;line-height:1}
+.g-addfoto .cap{font-size:10px;line-height:1.25;max-width:74px;text-align:center}
+.g-addfoto:hover{color:var(--accent);background:var(--rule)}
+/* Кнопки «у меня есть фото» и «рассказать о роде» - обычные карточки ленты:
+   едут вместе с фотографиями. Но стоять последними в ленте они не могут,
+   иначе при большом числе фотографий их просто не видно и материалов никто
+   не присылает. Поэтому скрипт после каждой остановки прокрутки переставляет
+   их в конец видимого ряда, см. placeFotoActs(). Прилипание к краю пробовали
+   03.08.2026, отвергнуто: выглядит как чужеродная накладка. */
+.g-fotoacts{flex:0 0 auto;display:flex;gap:10px}
+.g-scanmark{cursor:pointer;display:inline-block}
+img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
+.g-scanmark:hover{opacity:.7}
+.g-fmodal{position:fixed;inset:0;background:rgba(30,25,18,.55);display:none;z-index:60;
+  align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 12px}
+.g-fmodal.on{display:flex}
+.g-fmodal .box{background:var(--card);border:1px solid var(--rule);border-top:3px solid var(--accent);
+  max-width:460px;width:100%;padding:20px 24px;border-radius:3px}
+.g-fmodal label{display:block;margin:10px 0 3px;font-size:.88em}
+.g-fmodal input,.g-fmodal textarea{width:100%;padding:7px 9px;border:1px solid var(--rule);
+  background:var(--paper-2);color:var(--ink);font:inherit;border-radius:2px}
+.g-fmodal .send{margin-top:14px;padding:9px 18px;border:1px solid var(--accent);
+  background:var(--accent);color:#fff;font:inherit;cursor:pointer;border-radius:2px}
+.g-fmodal .close{float:right;border:0;background:none;font-size:20px;cursor:pointer;color:var(--ink-dim)}
+.g-fmodal .ok{color:var(--accent);font-weight:700;margin-top:12px}
+
+
+.g-fam.child::before{content:"";position:absolute;left:-22px;top:-14px;width:16px;height:32px;
+  border-left:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.g-fam .head{font-weight:700;font-size:1.05em}
+.g-fam .head .amb{color:var(--accent);font-weight:400;font-size:.85em}
+.g-fam .wife{font-style:italic;color:var(--ink-dim)}
+.g-fam .span{float:right;color:var(--ink-dim)}
+.g-kids{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}
+.g-kids li{white-space:nowrap}
+.g-kids .y{color:var(--ink-dim)}
+/* Зачёркиваем ТОЛЬКО имя. Раньше line-through стоял на всём <li>, и полоса шла
+   заодно по году и по иконкам сканов: отменить её у потомков нельзя, декорация
+   красится поверх. Замечено Никитой 10.08.2026, когда рядом с именем появилась
+   вторая иконка и полоса стала заметно длиннее. */
+.g-kids .dead .nm{text-decoration:line-through 1px;text-decoration-color:var(--accent)}
+.g-mar{margin-top:8px;padding-left:10px;border-left:2px solid var(--accent);font-size:.92em}
+.g-mar b{color:var(--accent);font-weight:700}
+.g-dth{margin-top:6px;font-size:.88em;color:var(--ink-dim)}
+.g-status{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:.66em;
+  text-transform:uppercase;letter-spacing:.07em;border:1px solid var(--rule);
+  padding:1px 6px;border-radius:2px;color:var(--ink-dim);vertical-align:2px;margin-left:6px}
+.g-net{margin-top:34px;border-top:2px solid var(--ink);padding-top:12px}
+.g-net h3{margin:0 0 4px;font-size:1.1em}
+.g-netlist{list-style:none;margin:8px 0 0;padding:0}
+.g-netlist li{padding:4px 0;border-bottom:1px dotted var(--rule)}
+.g-netlist .pair{cursor:pointer;color:var(--accent);font-weight:700}
+.g-netlist .pair:hover{text-decoration:underline}
+.g-netlist .pair-ext{color:var(--accent);font-weight:700;font-style:italic}
+.g-netlist .who{color:var(--ink-dim);font-size:.9em}
+.g-empty{color:var(--ink-dim);font-style:italic;padding:30px 0}
+.g-foot{color:var(--ink-dim);font-size:.82em;border-top:1px solid var(--rule);
+  margin-top:30px;padding:14px 0 40px}
+@media(max-width:760px){
+  /* на телефоне плашка с генеалогом уходит вниз страницы: сверху человек
+     пришёл смотреть роды, предложение услуги уместно после материала */
+  .g-wrap{display:flex;flex-direction:column}
+  /* плашка уходит вниз, но остаётся ВЫШЕ подстрочных примечаний (.g-foot) */
+  .g-wrap>.expert{order:90;margin:28px 0 8px}
+  .g-wrap>.g-foot{order:95}
+  /* восемь счётчиков на телефоне встают ровно в два ряда по четыре:
+     display:contents поднимает оба блока в общую сетку, подписи переносятся */
+  .g-statsrow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 10px;
+    justify-content:stretch;align-items:end}
+  .g-stats{display:contents}
+  .g-stats2{text-align:left}
+  .g-stats b{font-size:1.1em}
+  .g-stats span{font-size:.62em;letter-spacing:.04em;line-height:1.25;display:block}
+  .g-cols{flex-direction:column}
+  .g-side{width:100%;flex:none;border-right:none;border-bottom:1px solid var(--rule)}
+  /* на телефоне оба списка показывают примерно три строки: дальше прокрутка
+     внутри самого списка. Иначе до карточек людей приходится мотать пол-экрана */
+  .g-clans{max-height:104px}
+  .g-side{padding-bottom:14px}
+  /* поиск на телефоне: во всю ширину, шрифт как у названий родов в списке.
+     Кегль не ниже 16px намеренно: при меньшем iOS зумит страницу на фокусе */
+  .g-search{padding:0 14px 12px}
+  .g-search input{font-family:Georgia,"PT Serif","Noto Serif",serif;font-size:19px;
+    padding:12px 12px;border-radius:3px}
+  .g-main{padding-left:0;min-width:0}
+  .g-cols>*{min-width:0}
+  .g-origin,.g-tales,.g-fam{overflow-wrap:anywhere}
+  .g-fam.child{margin-left:calc(var(--d,1)*16px)}
+}
+.page .dek{max-width:none;text-align:justify}
+.g-legend{font-size:.85em;color:var(--ink-dim);margin:6px 0 0}
+
+.g-filt{display:flex;gap:6px;padding:0 14px 10px}
+.g-filt button{border:1px solid var(--rule);background:transparent;color:var(--ink);
+  padding:4px 9px;border-radius:3px;cursor:pointer;line-height:1}
+.g-filt button:hover{background:var(--paper-2)}
+.g-filt button.on{border-color:var(--accent);background:var(--paper-2);
+  box-shadow:inset 0 -2px 0 var(--accent)}
+.g-plreset{border:1px solid var(--rule);background:transparent;color:var(--accent);
+  font-weight:700;padding:1px 7px;border-radius:3px;cursor:pointer;line-height:1.2;
+  margin-left:6px;vertical-align:1px}
+.g-plreset:hover{background:var(--paper-2)}
+</style>
+<style>
 .e-mem{margin:6px 0 0;padding:0;list-style:none;font-size:.92em}
 .e-mem li{display:flex;gap:10px;padding:3px 0;border-bottom:1px dotted var(--rule)}
 .e-mem li:last-child{border-bottom:0}
