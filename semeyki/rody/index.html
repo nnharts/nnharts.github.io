@@ -389,6 +389,8 @@ function list(filter){
   const ul = document.getElementById('g-clans');
   ul.innerHTML = '';
   DATA.filter(c => !q || c.name.includes(q) || c.spellings.some(s => s.toLowerCase().includes(q)))
+    // по алфавиту, как в списке родов Голубевской и Екатериновской
+    .slice().sort((a, b) => a.name.localeCompare(b.name, 'ru'))
     .forEach(c => {
       const li = document.createElement('li');
       li.dataset.name = c.name;
@@ -404,7 +406,8 @@ list('');
 function route(){
   const m = (location.hash||'').match(/^#rod:(.+)$/);
   const c = m && DATA.find(x => slug(x.name) === m[1]);
-  render(c ? c.name : DATA[0].name);
+  const first = DATA.slice().sort((a,b)=>a.name.localeCompare(b.name,'ru'))[0];
+  render(c ? c.name : first.name);
 }
 addEventListener('hashchange', route);
 route();
