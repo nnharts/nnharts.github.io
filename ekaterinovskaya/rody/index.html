@@ -118,6 +118,11 @@ background:var(--paper);color:var(--ink);border-radius:2px}
   padding:6px 8px;margin-left:2px;line-height:0;vertical-align:-3px;border-radius:3px;
   -webkit-tap-highlight-color:rgba(140,47,47,.15)}
 .g-tedit:hover{color:var(--accent);background:var(--rule)}
+/* Значок «попали в газету» у персоны: он кликабельный, в отличие от серых
+   значков-пометок в списке родов, поэтому терракотовый, цветом ссылок.
+   Замечание Никиты 12.08.2026. */
+.g-newsmark{color:var(--accent);text-decoration:none;white-space:nowrap}
+.g-newsmark:hover{opacity:.75}
 .g-tell{margin-left:auto;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:3px;
   background:var(--paper-2);color:var(--ink-dim);cursor:pointer;font:inherit;
   font-size:10px;line-height:1.25;font-weight:400;padding:7px 12px;white-space:nowrap}
@@ -782,12 +787,12 @@ function dvorCards(f){
       const y=yrs(x[2],x[3],x[5]);
       // у кого своя карточка ниже, тот помечен: строка не дублирует, а ведёт
       return `<li>${esc(x[0])}${x[4]?' ↓':''} <span class="y">${esc(x[1]||'')}${y?', '+y:''}</span>`
-        +srcLine([['1811',recordNote(x[0],x[3],x[6])]],true)+`</li>`;
+        +srcLine([['1811',recordNote(x[0],x[3],x[6]),leafUrl1811(x[6])]],true)+`</li>`;
     }).join('');
     const srn=k.srn?` <span class="e-from">(${esc(k.srn)})</span>`:'';
     return fam(k.d, esc(k.n)+srn, yrs(k.a1794,k.a1811,k.by),
                k.d>0?esc(k.rel):'', k.sp.map(esc).join(', '), kids,
-               srcLine([['1811',recordNote(k.n,k.a1811,k.list)]]));
+               srcLine([['1811',recordNote(k.n,k.a1811,k.list),leafUrl1811(k.list)]]));
   }).join('');
 }
 
@@ -808,6 +813,15 @@ const SRC_TITLES={"tree": "Семейное дерево потомков", "181
 // Сканы листов списка религиозной общины 1928 года: пока переведены точечно,
 // по мере надобности (например, из ссылки в тексте цитаты рукописи).
 const LEAF_1928_URLS={"51":"/ekaterinovskaya/rody/source/1928/leaf-51.jpg"};
+// Сканы листов ревизии 1811 года (ГАКК Ф.250 оп.2 д.206). Пополняется по мере
+// выкладки листов: пока лист есть в этой карте, значок и подпись «лист N»
+// становятся терракотовой ссылкой и открывают сам скан, как у метрик
+// Голубевской. Листа нет - значок остаётся серым.
+const LEAF_1811_URLS={"570":"/ekaterinovskaya/rody/source/1811/leaf-570.jpg"};
+function leafUrl1811(sheet){
+  const k=String(sheet||'').replace(/\s*об\.?$/,'').trim();
+  return LEAF_1811_URLS[k]||'';
+}
 // «Упоминается в»: у каждой персоны дерева всегда есть сам источник-дерево,
 // а документы добавляются только там, где совпадение подтверждено вручную.
 // Архивный источник помечаем той же иконкой документа, что и в фильтре.
