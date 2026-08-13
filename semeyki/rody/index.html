@@ -388,14 +388,25 @@ function render(name){
     const dv = [...new Set(fromAll.map(m => m.dvor))].sort((a,b)=>(+a)-(+b));
     const yr = [...new Set(fromAll.map(m => m.from_year).filter(Boolean))].join(', ');
     const why = [...new Set(fromAll.map(m => m.from_why).filter(Boolean))].join('; ');
+    const all = PLACES[pl];
+    const kto = whole
+      ? `весь род, ${plural(fromAll.length,'человек','человека','человек')},`
+      : `часть рода, ${plural(fromAll.length,'человек','человека','человек')} из ${c.n_people},`;
+    const osn = why ? why.charAt(0).toLowerCase() + why.slice(1) : '';
     originHtml = `<section class="g-origin"><h3>Место исхода</h3>`
       + `<div><a class="pair" href="#mesto:${slug(pl)}">${pl}</a>`
       + (PLACE_TODAY[pl] ? ` <span class="e-spell">(ныне ${PLACE_TODAY[pl]})</span>` : '') + `</div>`
-      + `<div class="e-spell">`
-      + (whole ? `Весь род пришёл оттуда: ${plural(fromAll.length,'человек','человека','человек')}`
-               : `Оттуда пришла часть рода: ${plural(fromAll.length,'человек','человека','человек')} из ${c.n_people}`)
-      + `, ${plural(dv.length,'двор','двора','дворов')} № ${dv.join(', ')}`
-      + (yr ? `, ${yr} год` : '') + (why ? `. ${why}` : '') + `</div></section>`;
+      + `<p>${yr ? `В ${yr} году ` : ''}${kto} ${whole ? 'переселён' : 'переселена'} в слободу Семейки`
+      + ` из местечка Снетин Лубенского уезда Полтавской губернии`
+      + (osn ? `: крестьяне перешли к новой владелице ${osn}` : '') + `.`
+      + ` В ревизии ${1858} года они записаны в ${plural(dv.length,'дворе','дворах','дворах')}`
+      + ` № ${dv.join(', ')}.</p>`
+      + `<p class="e-spell">Всего из Снетина в Семейки`
+      + ` ${(all.people.length % 10 === 1 && all.people.length % 100 !== 11) ? 'перешёл' : 'перешло'}`
+      + ` ${plural(all.people.length,'человек','человека','человек')}`
+      + ` из ${plural(all.clans.size,'рода','родов','родов')}`
+      + ` (<a class="pair" href="#mesto:${slug(pl)}">все переселенцы</a>).</p>`
+      + `</section>`;
   }
   document.getElementById('g-main').innerHTML =
     `<div class="g-clanhead"><h2 class="g-clan-h">${cap(c.name)}</h2></div>`
