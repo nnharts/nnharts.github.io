@@ -374,11 +374,32 @@ function render(name){
     return `<section class="e-dvor"><h3 class="e-dvorh">Двор № ${d.dvor} · ${d.head}${prev}</h3>`
       + `<ul class="e-mem">${d.members.map(personLine).join('')}</ul></section>`;
   }).join('');
+  // «Место исхода» в шапке рода. Различаем весь род и часть: у Матвеенко из
+  // Снітина пришли 5 человек из 9, у Димченко 2 из 5, остальные жили в слободе
+  // и раньше. Писать «род пришёл оттуда» в таком случае было бы неверно.
+  const fromAll = [];
+  c.dvory.forEach(d => d.members.forEach(m => { if (m.from_np) fromAll.push({...m, dvor: d.dvor}); }));
+  let originHtml = '';
+  if (fromAll.length) {
+    const pl = fromAll[0].from_np;
+    const whole = fromAll.length === c.n_people;
+    const dv = [...new Set(fromAll.map(m => m.dvor))].sort((a,b)=>(+a)-(+b));
+    const yr = [...new Set(fromAll.map(m => m.from_year).filter(Boolean))].join(', ');
+    const why = [...new Set(fromAll.map(m => m.from_why).filter(Boolean))].join('; ');
+    originHtml = `<section class="g-origin"><h3>Место исхода</h3>`
+      + `<div><a class="pair" href="#mesto:${slug(pl)}">${pl}</a>`
+      + (PLACE_TODAY[pl] ? ` <span class="e-spell">(ныне ${PLACE_TODAY[pl]})</span>` : '') + `</div>`
+      + `<div class="e-spell">`
+      + (whole ? `Весь род пришёл оттуда: ${plural(fromAll.length,'человек','человека','человек')}`
+               : `Оттуда пришла часть рода: ${plural(fromAll.length,'человек','человека','человек')} из ${c.n_people}`)
+      + `, ${plural(dv.length,'двор','двора','дворов')} № ${dv.join(', ')}`
+      + (yr ? `, ${yr} год` : '') + (why ? `. ${why}` : '') + `</div></section>`;
+  }
   document.getElementById('g-main').innerHTML =
     `<div class="g-clanhead"><h2 class="g-clan-h">${cap(c.name)}</h2></div>`
     + `<div class="g-clanmeta">${plural(c.n_people,'человек','человека','человек')}`
     + ` · ${plural(c.n_dvor,'двор','двора','дворов')}</div>`
-    + spell + dvory
+    + spell + originHtml + dvory
     + `<p class="e-src">Источник: ${META.source}. Индексация: ${META.index_by}.`
     + ` Возраст записан по двум ревизиям, ${1850} и ${1858} годов, как в самой сказке.</p>`;
   document.querySelectorAll('#g-clans li').forEach(li =>
@@ -404,6 +425,20 @@ function placeIndex(){
   return out;
 }
 const PLACES = placeIndex();
+// Карточки населённых пунктов на Familio. Ссылку даёт Никита, угадывать нельзя:
+// поиск Familio закрыт авторизацией. Пусто - блок просто не показывается.
+const FAMILIO_PLACES = {};
+const FAMILIO_ICON = 'data:image/png;base64,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';
+// современные названия: уезд стал районом, местечко селом
+const PLACE_TODAY = {"Полтавская губерния, Лубенский уезд, м. Снетин": "село Снітин Лубенского района Полтавской области, Украина"};
+
+function famLink(name){
+  const id = FAMILIO_PLACES[name];
+  if (!id) return '';
+  return `<div class="g-clanmeta"><a href="https://familio.org/settlements/${id}" target="_blank" rel="noopener noreferrer">`
+    + `<img src="${FAMILIO_ICON}" width="14" height="14" alt="" style="vertical-align:-2px;border-radius:3px;margin-right:4px">`
+    + `Карточка населённого пункта на Familio →</a></div>`;
+}
 
 function renderPlace(name){
   const p = PLACES[name];
@@ -424,6 +459,8 @@ function renderPlace(name){
     `<div class="g-clanhead"><h2 class="g-clan-h">${name}</h2></div>`
     + `<div class="g-clanmeta">${plural(p.people.length,'человек','человека','человек')}`
     + ` · ${plural(p.dvory.size,'двор','двора','дворов')} · ${plural(p.clans.size,'род','рода','родов')}</div>`
+    + (PLACE_TODAY[name] ? `<div class="g-clanmeta">Ныне ${PLACE_TODAY[name]}</div>` : '')
+    + famLink(name)
     + (p.why.size ? `<p class="e-spell">Основание переселения: ${[...p.why].join('; ')}`
         + (p.years.size ? `. Год: ${[...p.years].join(', ')}` : '') + `</p>` : '')
     + blocks
