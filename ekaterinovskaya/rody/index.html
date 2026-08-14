@@ -889,26 +889,29 @@ function srcLine(srcs,compact=false){
     const t=SRC_TITLES[s[0]]||s[0];
     const doc=s[0]!=='tree';
     const note=s[1]||'';
-    // Иконка относится к точному листу, а не ко всему названию источника.
-    // Поэтому ставим её непосредственно перед «лист …» и, если скан есть,
-    // делаем и иконку, и подпись листа одной терракотовой ссылкой.
+    // Значок идёт ПЕРВЫМ в строке, как значок дерева у родословной: он метка
+    // источника, а не приписка к номеру листа. Терракотовый и кликабельный,
+    // если скан листа выложен; серый ведёт в форму запроса. Просьба Никиты
+    // 14.08.2026, до этого значок стоял в середине строки перед словом «лист».
     const sheet=note.match(/^(.*?)(?:,\s*)?(лист\s+.+)$/i);
+    const url=s[2]||'';
+    let mark='';
+    if(!doc) mark=ICON_TREE+' ';
+    else if(url) mark=`<a class="e-source-link" href="${esc(url)}" target="_blank" rel="noopener"`
+      +` title="Открыть ${esc(sheet?sheet[2]:t)}">${ICON_SCROLL}</a> `;
+    else mark=`<span class="e-source-ref e-source-ask" title="Запросить скан листа"`
+      +` data-src="${esc(t)}" data-note="${esc(note)}"`
+      +` onclick="event.stopPropagation();openScanRequest(this.dataset.src,this.dataset.note)"`
+      +`>${ICON_SCROLL}</span> `;
     let tail='';
     if(sheet){
       const before=sheet[1].replace(/,\s*$/,'');
       if(before) tail+=` <span class="y">${esc(before)},</span>`;
-      if(s[2]) tail+=` <a class="e-source-link" href="${esc(s[2])}" target="_blank" rel="noopener" title="Открыть ${esc(sheet[2])}" aria-label="Открыть ${esc(sheet[2])}">${ICON_SCROLL}<span>${esc(sheet[2])}</span></a>`;
-      // Значения кладём в data-атрибуты: подставлять их прямо в onclick нельзя,
-      // кавычки из названия источника рвут html-атрибут. Поймано 13.08.2026.
-      else if(doc) tail+=` <span class="e-source-ref e-source-ask" title="Запросить скан листа"`
-        +` data-src="${esc(t)}" data-note="${esc(note)}"`
-        +` onclick="event.stopPropagation();openScanRequest(this.dataset.src,this.dataset.note)"`
-        +`>${ICON_SCROLL}<span>${esc(sheet[2])}</span></span>`;
-      else tail+=` <span class="y">${esc(sheet[2])}</span>`;
-    }else{
-      tail=(doc?ICON_SCROLL+' ':'')+(note?` <span class="y">${esc(note)}</span>`:'');
+      tail+=` <span class="y">${esc(sheet[2])}</span>`;
+    }else if(note){
+      tail=` <span class="y">${esc(note)}</span>`;
     }
-    return `<li>${doc?'':ICON_TREE+' '}${esc(t)}${tail}</li>`;
+    return `<li>${mark}${esc(t)}${tail}</li>`;
   }).join('');
   return `<div class="e-srcs${compact?' compact':''}"><span class="lb">Упоминается в:</span><ul>${items}</ul></div>`;
 }
@@ -941,9 +944,9 @@ function p30Cards(list, name){
   if(!list||!list.length) return '';
   return list.map((p,idx)=>{
     const meta=[p[1],p[2]].filter(Boolean).map(esc).join(' · ');
-    const badge='<span class="e-note" style="display:inline-block;margin-left:6px">угнан в Германию</span>';
-    return fam(0, esc(p[0])+badge, '', '', '', '',
-      (meta?`<div class="g-clanmeta" style="margin:2px 0 0">${meta}</div>`:'')
+    return fam(0, esc(p[0]), '', '', '', '',
+      `<div class="g-clanmeta" style="margin:2px 0 0"><span class="e-note">Угнан(а) в Германию</span>`
+      + (meta?` · ${meta}`:'') + `</div>`
       + srcLine([['1930',`${[p[0],p[3]?`лист ${p[3]}`:''].filter(Boolean).join(', ')}`]]),
       'p30-'+idx);
   }).join('');
