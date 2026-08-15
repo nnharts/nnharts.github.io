@@ -57,7 +57,7 @@
 .g-clanhead{display:flex;align-items:baseline;gap:8px 14px;
   flex-wrap:wrap;min-width:0}
 .g-clan-h{overflow-wrap:anywhere;min-width:0}
-.g-actions{display:flex;align-items:baseline;gap:14px;margin-left:auto;flex:0 0 auto}
+.g-actions{display:flex;align-items:center;gap:14px;margin-left:auto;flex:0 0 auto}
 .g-sub{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;
   color:var(--accent);cursor:pointer;font:inherit;font-size:.85em;line-height:1.2;
   padding:10px 0 10px 12px;white-space:nowrap;position:relative;z-index:5;
@@ -82,6 +82,7 @@
 .g-sub svg{flex:0 0 auto}
 .g-subalt{font-size:11px;color:var(--ink-dim);margin:14px 0 0}
 .g-subalt input{font-size:12px}
+.g-subcount{color:var(--ink-dim);font-size:.85em;white-space:nowrap}
 .g-godlist .g-godtxt{color:var(--ink-dim);font-size:.9em;font-style:italic}
 .g-godlist .g-godgroup{margin-top:14px;padding:7px 0 4px;border-bottom:1px solid var(--rule)}
 .g-godlist .g-godgroup:first-child{margin-top:0}
@@ -271,6 +272,7 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
 .e-hypo{margin:4px 0 0;padding:6px 10px;border-left:2px solid var(--accent-2);
   background:var(--paper-2);font-size:.84em;line-height:1.5;color:var(--ink-dim)}
 .e-hypo-tag{color:var(--accent);font-weight:600;margin-right:4px}
+.g-side-note{margin:8px 16px 0;font-size:.8em;color:var(--ink-dim)}
 .e-source-ask{cursor:pointer}
 .e-source-ask:hover{color:var(--ink)}
 .e-person-link{color:var(--accent);text-decoration:underline dotted 1px;text-decoration-color:var(--accent);cursor:pointer}
@@ -358,6 +360,9 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
       <ul class="g-clans" id="g-clans"></ul>
       <h4 class="g-side-h">Места исхода</h4>
       <ul class="g-clans" id="g-places"></ul>
+      <!-- Страницу карты собирает отдельный генератор (make_ishod_page_ekat.py),
+           здесь только ссылка на неё, как в справочнике Голубевской. -->
+      <p class="g-side-note"><a href="ishod/">Подробно: карта и список →</a></p>
     </aside>
     <main class="g-main" id="g-main"></main>
   </div>
@@ -504,6 +509,23 @@ const CLAN_NOTES={"харченко": "В станице Екатериновс�
 const DNA_CLANS=["стасюк", "сусь", "харченко", "косуля"];
 const SUB_BOT='Hartschenberg_tracking_bot';
 const FOTO_API='/golubevskaya/foto-api';
+// Счётчик подписчиков « · N читателей» у кнопки. Ключи с приставкой ekat-.
+// CSS (.g-subcount, .g-actions по центру) наследуется из стиля Голубевской.
+(async()=>{
+  let counts={};
+  try{ const r=await fetch(FOTO_API+'/subscribe/counts'); if(r.ok) counts=await r.json(); }catch(e){}
+  const plural=n=>{ const d=n%10, dd=n%100;
+    if(d===1&&dd!==11) return 'читатель';
+    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'читателя';
+    return 'читателей'; };
+  const fill=()=>document.querySelectorAll('.g-subcount[data-t]:not([data-done])').forEach(el=>{
+    el.dataset.done='1';
+    const n=counts[el.dataset.t]||0;
+    if(n>0) el.textContent=` · ${n} ${plural(n)}`;
+  });
+  fill();
+  new MutationObserver(fill).observe(document.body,{childList:true,subtree:true});
+})();
 // Карта опубликованных листов стоит рядом с общей конфигурацией: p20Cards()
 // вызывается только у рода Верти, поэтому пропущенное определение незаметно
 // на всех остальных родах и ломает ровно его карточку.
@@ -1212,7 +1234,7 @@ function select(name){
     `<div class="g-clanhead"><h2 class="g-clan-h">${esc(c.title)}</h2>
      <div class="g-actions">
      <button class="g-sub g-share" title="Скопировать ссылку с фото рода для соцсетей" onclick="copyCardLink('${name.replace(/'/g,"\'")}','r',this)">${ICON_LINK}<span>Поделиться</span></button>
-     <button class="g-sub" title="Подписаться на обновления рода" onclick="openSubForm('${c.name.replace(/'/g,"\'")}')">${ICON_TG}<span>подписаться</span></button>
+     <button class="g-sub" title="Подписаться на обновления рода" onclick="openSubForm('${c.name.replace(/'/g,"\'")}')">${ICON_TG}<span>подписаться</span></button><span class="g-subcount" data-t="ekat-${slug(c.name)}"></span>
      </div></div>
      <div class="g-clanmeta">${c.fams.length? c.fams.length+' дворов в 1811':''}${c.fams.length&&c.p28.length?' · ':''}${c.p28.length? c.p28.length+' чел. в 1928':''}${c.p30.length?' · '+c.p30.length+' угнаны в Германию':''}</div>
      ${originHtml}${talesHtml}
