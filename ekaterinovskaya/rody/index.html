@@ -50,7 +50,7 @@
 .g-clanhead{display:flex;align-items:baseline;gap:8px 14px;
   flex-wrap:wrap;min-width:0}
 .g-clan-h{overflow-wrap:anywhere;min-width:0}
-.g-actions{display:flex;align-items:baseline;gap:14px;margin-left:auto;flex:0 0 auto}
+.g-actions{display:flex;align-items:center;gap:14px;margin-left:auto;flex:0 0 auto}
 .g-sub{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;
   color:var(--accent);cursor:pointer;font:inherit;font-size:.85em;line-height:1.2;
   padding:10px 0 10px 12px;white-space:nowrap;position:relative;z-index:5;
@@ -735,7 +735,7 @@ const hasOrig=c=>c.orig.length>0;
 const hasDoc=c=>c.fams.length>0;
 const hasDNA=c=>DNA_CLANS.includes(c.name);
 const FILT={photo:false,tales:false,origin:false,dna:false,scan:false};
-const userFotoRods=new Set();
+const userFotoRods=new Set(["коваленко", "федоренко"]);
 function buildFilt(){
   const el=document.getElementById('g-filt'); if(!el) return;
   el.innerHTML='';
