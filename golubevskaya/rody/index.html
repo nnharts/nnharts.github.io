@@ -27,7 +27,14 @@
 .g-search input{width:100%;padding:7px 10px;border:1px solid var(--rule);background:var(--card);
   color:var(--ink);font:inherit;font-size:.9em;border-radius:2px}
 .g-search input:focus{outline:2px solid var(--focus);outline-offset:1px}
-.g-clans{list-style:none;margin:0;padding:0;max-height:74vh;overflow-y:auto}
+/* Все три списка (роды, места приписки, места исхода) не выше семи строк:
+   иначе левая колонка тянется на несколько экранов и до второго списка
+   надо мотать. Просьба Никиты 15.08.2026. Строка ~26px, 7 строк ~184px. */
+.g-clans{list-style:none;margin:0;padding:0;max-height:184px;overflow-y:auto}
+.g-side-note{padding:6px 16px 0;font-size:.8em;color:var(--ink-dim)}
+.g-ish-list{list-style:none;margin:0;padding:0}
+.g-ish-row{padding:7px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.g-ish-row:hover{background:var(--paper-2)}
 .g-clans li{padding:5px 16px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;
   border-left:3px solid transparent}
 .g-clans li:hover{background:var(--paper-2)}
@@ -309,6 +316,10 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
       <h4 class="g-side-h">Места приписки <button id="g-plreset" class="g-plreset" title="Снять фильтр места" style="display:none">&#10005;</button></h4>
       <div class="g-search"><input id="g-pq" type="search" placeholder="Поиск места… (напр. Джаркент)" aria-label="Поиск места приписки"></div>
       <ul class="g-clans" id="g-places"></ul>
+      <h4 class="g-side-h">Места исхода <button id="g-ishreset" class="g-plreset" title="Снять фильтр места исхода" style="display:none">&#10005;</button></h4>
+      <div class="g-search"><input id="g-iq" type="search" placeholder="Поиск места исхода… (напр. Тобольская)" aria-label="Поиск места исхода"></div>
+      <ul class="g-clans" id="g-ishod"></ul>
+      <div class="g-side-note">Откуда роды пришли на Борохудзир. Подробно: <a href="ishod/">карта и список</a>.</div>
     </aside>
     <main class="g-main" id="g-main"><div class="g-empty">Выберите род слева.</div></main>
   </div>
@@ -537,26 +548,27 @@ function deadSet(f){
 // сканы листов метрик: line записи -> файл (открывается по клику на текст писаря)
 const SCAN_BASE='';
 const SCAN_LINKS={17601:'metriki/1887_f597-o1-d50_116ob-117_dsc08446.jpg'};
-// Сканы, привязанные к СЕМЬЕ, а не к номеру записи. Нужны для документов из
-// ЧУЖИХ приходов: венчание Афиногена Добрынина 1885 года прошло в селении
-// Зайцевском, в выписку по Голубевской не попало, и line у него нет вовсе.
-// Ключ - key семьи из tree_data.json. Иконка встаёт в заголовок карточки.
-const SCAN_BY_FAMILY = {
+// Браки главы семьи, известные по документам ИЗ ЧУЖИХ ПРИХОДОВ. Венчание
+// Афиногена Добрынина 1885 года прошло в селении Зайцевском, в выписку по
+// Голубевской не попало, поэтому line у него нет и обычный SCAN_BY_LINE не
+// годится. Ключ - key семьи из tree_data.json.
+// Показывается ОТДЕЛЬНОЙ строкой события «⚭ год», как прочие браки, а не
+// иконкой у имени: брак - это событие, а не свойство человека (правило
+// Никиты 15.08.2026, до этого значок стоял перед ФИО).
+const EXT_MARRIAGE = {
  'афиноген|иван|добрынин': {u:'metriki/1885_f597_brak-dobrynin-tyutyavina.jpg',
-   t:'Брак Добрынина и Евфросинии Тютявиной',
-   d:'30.01.1885 · метрическая книга, часть вторая о бракосочетавшихся, запись №7. '
-    +'Жених - крестьянин Рязанской губернии, Зарайского уезда, 21 год; невеста - '
-    +'Евфросиния Феодорова Тютявина, 17 лет. Венчал священник Владимир Архипов '
-    +'с и. д. псаломщика Михаилом Троицким. Копия низкого разрешения: имя жениха '
-    +'на ней не разобрать, в выписке 1888-1898 он значится Афиногеном Иоанновым'},
+   year:1885, bride:'Евфросинии Феодоровой Тютявиной', groom_age:'21',
+   place:'селение Зайцевское, запись №7'},
 };
-function scanMarkFam(key){
-  const x=SCAN_BY_FAMILY[key]; if(!x) return '';
-  return `<span class="g-scanmark" title="Открыть лист метрической книги" `
-    +`onclick="event.stopPropagation();openScanFamily('${key}')">${ICON_SCROLL_ACC}</span> `;
+function extMarriageLine(key){
+  const x=EXT_MARRIAGE[key]; if(!x) return '';
+  const mark=`<span class="g-scanmark" title="Открыть лист метрической книги" `
+    +`onclick="event.stopPropagation();openExtMarriage('${key}')">${ICON_SCROLL_ACC}</span> `;
+  return `<div class="g-mar"><b>⚭ ${x.year}</b> ${mark}женился на ${x.bride}`
+    +`${x.groom_age?`, ему ${x.groom_age}`:''}${x.place?` · ${x.place}`:''}</div>`;
 }
-function openScanFamily(key){
-  const x=SCAN_BY_FAMILY[key]; if(!x) return;
+function openExtMarriage(key){
+  const x=EXT_MARRIAGE[key]; if(!x) return;
   if(typeof ym==='function') ym(111205749,'reachGoal','otkrytie_metriki');
   window.open(SCAN_BASE+x.u,'_blank','noopener');
 }
@@ -839,16 +851,17 @@ function famCard(f, depth, amb){
     if(m.role==='дочь') return `<div class="g-mar"><b>⚭ ${m.year??'?'}</b> ${scanMark(m.line)} дочь ${m.bride||'?'} выдана за ${m.groom||'?'}${m.groom_age?` (${m.groom_age} л.)`:''}</div>`;
     return `<div class="g-mar"><b>⚭ ${m.year??'?'}</b> ${scanMark(m.line)} сын ${m.groom||'?'} женился${m.bride?` на ${m.bride}`:''}${m.bride_father?` (дочь ${m.bride_father})`:''}</div>`;
   }).join('');
+  const extMar = extMarriageLine(f.key);
   const wdth = f.deaths.filter(d=>d.rel==='жена').map(d=>`<div class="g-dth">${d.line?scanMark(d.line):''}† жена ${d.name||''} ${d.year||''}${d.age?` (${d.age} л.)`:''}</div>`).join('');
   return `<div class="g-fam ${cls}"${ind}>
     <span class="span g-mono">${span}</span>
-    <div class="head">${scanMarkFam(f.key)}${f.display}${newsMark(f.display)}${stt}${pl} ${amb?'<span class="amb">(отец под вопросом)</span>':''}</div>
+    <div class="head">${f.display}${newsMark(f.display)}${stt}${pl} ${amb?'<span class="amb">(отец под вопросом)</span>':''}</div>
     ${multiWife
       ? wgroups.map(g=>`<div class="wife">∞ ${g.label||'мать в записи не указана'}</div>
           <ul class="g-kids">${g.items.map(kidLi).join('')}</ul>`).join('')
       : `<div class="wife">∞ ${wives}</div>
     ${kids?`<ul class="g-kids">${kids}</ul>`:''}`}
-    ${knotes}${mars}${wdth}
+    ${knotes}${extMar}${mars}${wdth}
   </div>`;
 }
 
@@ -1209,6 +1222,68 @@ if(_pq){
   });
 }
 
+// --- места исхода ---
+// Третий список в левой колонке, рядом с родами и местами приписки. Просьба
+// Никиты 15.08.2026: место исхода - такой же способ искать своих, как фамилия
+// и место приписки, а до этого оно было видно только внутри карточки рода и на
+// отдельной странице ishod/. Данные те же, из origins (файл ishod.csv).
+const ishodIndex = {};
+clans.forEach(c=>(c.origins||[]).forEach(o=>{
+  if(!o.ishod) return;
+  (ishodIndex[o.ishod]=ishodIndex[o.ishod]||[]).push(c);
+}));
+const iul = document.getElementById('g-ishod');
+const ishodSorted = Object.entries(ishodIndex)
+  .sort((a,b)=>b[1].length-a[1].length||a[0].localeCompare(b[0],'ru'));
+let selIshodName = null;
+function renderIshod(filter){
+  if(!iul) return;
+  const q=(filter||'').trim().toLowerCase();
+  iul.innerHTML='';
+  ishodSorted.forEach(([place,arr])=>{
+    if(q && !place.toLowerCase().includes(q)) return;
+    const li=document.createElement('li');
+    li.tabIndex=0;
+    li.innerHTML=`<span>${place}</span><span class="n g-mono">${arr.length}</span>`;
+    if(place===selIshodName) li.classList.add('on');
+    li.onclick=()=>{selectIshod(place);document.getElementById('g-main').scrollIntoView({block:'start'})};
+    li.onkeydown=e=>{if(e.key==='Enter')selectIshod(place);};
+    iul.appendChild(li);
+  });
+}
+renderIshod('');
+const _iq=document.getElementById('g-iq');
+if(_iq){
+  _iq.addEventListener('input',e=>renderIshod(e.target.value));
+  _iq.addEventListener('keydown',e=>{
+    if(e.key!=='Enter') return;
+    e.preventDefault();
+    const first=iul.querySelector('li');
+    if(first){ e.target.blur(); first.click(); }
+  });
+}
+function selectIshod(place){
+  selIshodName = place;
+  const rb=document.getElementById('g-ishreset'); if(rb) rb.style.display='';
+  renderIshod(_iq?_iq.value:'');
+  const arr=(ishodIndex[place]||[]).slice()
+    .sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+  const rows=arr.map(c=>{
+    const o=(c.origins||[]).find(x=>x.ishod===place)||{};
+    const bits=[o.year?`прибыли в ${o.year} г.`:'', o.sosl||''].filter(Boolean).join(', ');
+    return `<li class="g-ish-row" onclick="selectClan('${c.name}')">`
+      +`<b>${cap(c.name)}</b>${bits?` <span class="y">— ${bits}</span>`:''}`
+      +`${o.do1?`<div class="g-clanmeta">до того: ${o.do1}${o.do2?`, ранее ${o.do2}`:''}</div>`:''}</li>`;
+  }).join('');
+  document.getElementById('g-main').innerHTML=
+    `<div class="g-clanhead"><h2 class="g-clan-h">${place}</h2></div>`
+    +`<div class="g-clanmeta" style="margin:0 0 10px">Отсюда пришли ${arr.length} `
+    +`${arr.length===1?'род':(arr.length<5?'рода':'родов')} станицы</div>`
+    +`<ul class="g-ish-list">${rows}</ul>`;
+}
+const _ir=document.getElementById('g-ishreset');
+if(_ir) _ir.onclick=()=>{selIshodName=null;_ir.style.display='none';renderIshod(_iq?_iq.value:'');};
+
 function selectPlace(p){
   selPlaceName = p;
   const rb=document.getElementById('g-plreset'); if(rb) rb.style.display='';
@@ -1353,7 +1428,7 @@ function _route(){
 // Заодно браки семьи проверяются по SCAN_BY_LINE, а не по старому SCAN_LINKS:
 // там всего одна запись, и новые привязки браков фильтр не видел.
 const clanHasScan=c=>c.families.some(f=>
-      SCAN_BY_FAMILY[f.key]
+      EXT_MARRIAGE[f.key]
    || (f.marriages||[]).some(m=>m.line&&SCAN_BY_LINE[m.line])
    || (f.children||[]).some(ch=>ch.line&&SCAN_BY_LINE[ch.line])
    || (f.deaths||[]).some(d=>d.line&&SCAN_BY_LINE[d.line]))

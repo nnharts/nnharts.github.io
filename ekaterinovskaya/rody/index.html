@@ -27,7 +27,14 @@
 .g-search input{width:100%;padding:7px 10px;border:1px solid var(--rule);background:var(--card);
   color:var(--ink);font:inherit;font-size:.9em;border-radius:2px}
 .g-search input:focus{outline:2px solid var(--focus);outline-offset:1px}
-.g-clans{list-style:none;margin:0;padding:0;max-height:74vh;overflow-y:auto}
+/* Все три списка (роды, места приписки, места исхода) не выше семи строк:
+   иначе левая колонка тянется на несколько экранов и до второго списка
+   надо мотать. Просьба Никиты 15.08.2026. Строка ~26px, 7 строк ~184px. */
+.g-clans{list-style:none;margin:0;padding:0;max-height:184px;overflow-y:auto}
+.g-side-note{padding:6px 16px 0;font-size:.8em;color:var(--ink-dim)}
+.g-ish-list{list-style:none;margin:0;padding:0}
+.g-ish-row{padding:7px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.g-ish-row:hover{background:var(--paper-2)}
 .g-clans li{padding:5px 16px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;
   border-left:3px solid transparent}
 .g-clans li:hover{background:var(--paper-2)}
@@ -50,7 +57,7 @@
 .g-clanhead{display:flex;align-items:baseline;gap:8px 14px;
   flex-wrap:wrap;min-width:0}
 .g-clan-h{overflow-wrap:anywhere;min-width:0}
-.g-actions{display:flex;align-items:center;gap:14px;margin-left:auto;flex:0 0 auto}
+.g-actions{display:flex;align-items:baseline;gap:14px;margin-left:auto;flex:0 0 auto}
 .g-sub{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;
   color:var(--accent);cursor:pointer;font:inherit;font-size:.85em;line-height:1.2;
   padding:10px 0 10px 12px;white-space:nowrap;position:relative;z-index:5;
@@ -75,7 +82,6 @@
 .g-sub svg{flex:0 0 auto}
 .g-subalt{font-size:11px;color:var(--ink-dim);margin:14px 0 0}
 .g-subalt input{font-size:12px}
-.g-subcount{color:var(--ink-dim);font-size:.85em;white-space:nowrap}
 .g-godlist .g-godtxt{color:var(--ink-dim);font-size:.9em;font-style:italic}
 .g-godlist .g-godgroup{margin-top:14px;padding:7px 0 4px;border-bottom:1px solid var(--rule)}
 .g-godlist .g-godgroup:first-child{margin-top:0}
@@ -531,6 +537,17 @@ document.getElementById('g-sform').addEventListener('submit',async ev=>{
 });
 const FOTO_API_MARK=1;
 
+const FAMILIO_PLACES={"Полтавская губерния, Лубенский повет, с. Тарандинцы": "4bd7aa73-1567-4295-b325-f36655b2b90c", "Полтавская губерния, Лубенский повет, с. Губское": "5eefe39b-59ca-49d7-bb50-ceaf27f54691"};
+// Ссылка на карточку места исхода в Familio, с фирменной иконкой: так же
+// сделано в справочнике Голубевской и слободы Семейки.
+function famPlaceLink(pn){
+  const id=FAMILIO_PLACES[pn];
+  if(!id) return '';
+  return `<div class="g-clanmeta"><a href="https://familio.org/settlements/${id}" target="_blank" rel="noopener noreferrer">`
+    +`<img src="/familio-tree.png" width="14" height="14" alt="Familio" loading="lazy"`
+    +` style="vertical-align:-2px;border-radius:3px;margin-right:4px">`
+    +`Карточка населённого пункта на Familio →</a></div>`;
+}
 const FAMILIO_EXPERT='https://market.familio.org/expert/nikita-neytan-kharchenberg/';
 const ICON_DNA=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.55"><path d="M9 3h6M10 3v7.5L5.8 18a3 3 0 0 0 2.6 4.5h7.2A3 3 0 0 0 18.2 18L14 10.5V3"/><path d="M8.5 15h7"/></svg>`;
 const ICON_CAM=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.55"><path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3"/></svg>`;
@@ -1224,6 +1241,7 @@ function selectPlace(pn){
   document.getElementById('g-main').innerHTML=
     `<div class="g-clanhead"><h2 class="g-clan-h">${esc(pn)}</h2></div>
      <div class="g-clanmeta">${p.n} душ прибыли отсюда в Екатериновский курень (по ревизии 1811 года)</div>
+     ${famPlaceLink(pn)}
      <section class="g-net"><h3>Роды из этого места <span class="cnt">${p.clans.length}</span></h3>
      <ul class="g-netlist">${rows}</ul></section>`;
   setHash('#mesto:'+p.slug);
