@@ -57,7 +57,7 @@
 .g-clanhead{display:flex;align-items:baseline;gap:8px 14px;
   flex-wrap:wrap;min-width:0}
 .g-clan-h{overflow-wrap:anywhere;min-width:0}
-.g-actions{display:flex;align-items:baseline;gap:14px;margin-left:auto;flex:0 0 auto}
+.g-actions{display:flex;align-items:center;gap:14px;margin-left:auto;flex:0 0 auto}
 .g-sub{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;
   color:var(--accent);cursor:pointer;font:inherit;font-size:.85em;line-height:1.2;
   padding:10px 0 10px 12px;white-space:nowrap;position:relative;z-index:5;
@@ -82,6 +82,7 @@
 .g-sub svg{flex:0 0 auto}
 .g-subalt{font-size:11px;color:var(--ink-dim);margin:14px 0 0}
 .g-subalt input{font-size:12px}
+.g-subcount{color:var(--ink-dim);font-size:.85em;white-space:nowrap}
 .g-godlist .g-godtxt{color:var(--ink-dim);font-size:.9em;font-style:italic}
 .g-godlist .g-godgroup{margin-top:14px;padding:7px 0 4px;border-bottom:1px solid var(--rule)}
 .g-godlist .g-godgroup:first-child{margin-top:0}
@@ -1087,7 +1088,7 @@ function taleDate(iso, approx){
     `<div class="g-clanhead"><h2 class="g-clan-h">${cap(c.name)}${CLAN_SECOND[c.name]?` <span class="var">он же ${CLAN_SECOND[c.name]}</span>`:''}${(v=>v.length?` <span class="var">${v.join(', ')}</span>`:'')(c.variants.filter(x=>x!==(CLAN_DISPLAY_RAW[c.name]||c.name)).map(x=>x?x[0].toUpperCase()+x.slice(1):x))}</h2>
      <div class="g-actions">
      <button class="g-sub g-share" title="Скопировать ссылку с фото рода для соцсетей" onclick="copyCardLink('${name.replace(/'/g,"\'")}','r',this)">${ICON_LINK}<span>Поделиться</span></button>
-     <button class="g-sub" title="Подписаться на обновления рода" onclick="openSubForm('${name.replace(/'/g,"\'")}')">${ICON_TG}<span>подписаться</span></button>
+     <button class="g-sub" title="Подписаться на обновления рода" onclick="openSubForm('${name.replace(/'/g,"\'")}')">${ICON_TG}<span>подписаться</span></button><span class="g-subcount" data-t="${slug(name)}"></span>
      </div></div>
      <div class="g-clanmeta">${c.n_families} семей · ${c.n_children} детей в записях</div>
      ${CLAN_NOTES[c.name]?`<div class="g-note" style="font-style:normal">${CLAN_NOTES[c.name]}</div>`:''}
@@ -1298,7 +1299,7 @@ function selectPlace(p){
     `<div class="g-clanhead"><h2 class="g-clan-h">${p}</h2>
      <div class="g-actions">
      <button class="g-sub g-share" title="Скопировать ссылку с фото места для соцсетей" onclick="copyCardLink('${p.replace(/'/g,"\'")}','m',this)">${ICON_LINK}<span>Поделиться</span></button>
-     <button class="g-sub" title="Подписаться на обновления места" onclick="openSubForm('${p.replace(/'/g,"\'")}')">${ICON_TG}<span>подписаться</span></button>
+     <button class="g-sub" title="Подписаться на обновления места" onclick="openSubForm('${p.replace(/'/g,"\'")}')">${ICON_TG}<span>подписаться</span></button><span class="g-subcount" data-t="${slug(p)}"></span>
      </div></div>
      <div class="g-clanmeta">${arr.length} семей приписано (по записям о рождениях)</div>
      ${FAMILIO_PLACES[p]?`<div class="g-clanmeta"><a href="https://familio.org/settlements/${FAMILIO_PLACES[p]}" target="_blank" rel="noopener noreferrer"><img src="${FAMILIO_ICON}" width="14" height="14" alt="" style="vertical-align:-2px;border-radius:3px;margin-right:4px">Карточка населённого пункта на Familio →</a></div>`:''}
@@ -1918,6 +1919,26 @@ document.getElementById('g-tform').addEventListener('submit',async ev=>{
 </script>
 <script>
 const FOTO_API='/golubevskaya/foto-api';
+// Счётчик подписчиков « · N читателей» справа от кнопки. Карточки рендерятся по
+// мере навигации (SPA), поэтому число проставляем на появление span'а через
+// MutationObserver, а не один раз при загрузке. Нулей сервер не отдаёт - тогда
+// счётчик просто не появляется.
+(async()=>{
+  let counts={};
+  try{ const r=await fetch('/golubevskaya/foto-api/subscribe/counts');
+       if(r.ok) counts=await r.json(); }catch(e){}
+  const plural=n=>{ const d=n%10, dd=n%100;
+    if(d===1&&dd!==11) return 'читатель';
+    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'читателя';
+    return 'читателей'; };
+  const fill=()=>document.querySelectorAll('.g-subcount[data-t]:not([data-done])').forEach(el=>{
+    el.dataset.done='1';
+    const n=counts[el.dataset.t]||0;
+    if(n>0) el.textContent=` · ${n} ${plural(n)}`;
+  });
+  fill();
+  new MutationObserver(fill).observe(document.body,{childList:true,subtree:true});
+})();
 let fotoKind='rod', fotoTarget='';
 function openFotoForm(kind,target){
   fotoKind=kind; fotoTarget=target;
