@@ -1046,10 +1046,10 @@ function taleDate(iso, approx){
         // терракотовые, как остальные ссылки на документы (Никита 18.08.2026).
         const scan=r.line?scanMark(r.line):'';
         const news=r.url
-          ? ` <a class="g-scanmark" href="${r.url}" title="Открыть заметку в Zeitungsecke">${ICON_NEWS_ACC}</a>`
+          ? `<a class="g-scanmark" href="${r.url}" title="Открыть заметку в Zeitungsecke">${ICON_NEWS_ACC}</a> `
           : '';
         return `<li><span class="y g-mono">${r.year||'?'}</span>`
-          +`<div class="who">${r.who}, ${scan}${r.kind||'запись'}${news}`
+          +`<div class="who">${r.who}, ${scan}${news}${r.kind||'запись'}`
           +`${r.place?', '+r.place:''}`
           +`${r.note?`<br><i class="g-godtxt">${r.note}</i>`:''}</div></li>`;
       }).join('')+`</ul></section>`
@@ -1237,7 +1237,7 @@ const CLAN_TALES = {"афанасьев": [["Бабушка говорила, ч
 // верил нам на слово. Пополнять руками, по мере разбора вырезок.
 const EXTRA_REC = {
   "чувыров": [{
-    year: 1884, who: "Иван Ермолаев Чувиров", kind: "газетное объявление",
+    year: 1884, who: "Иван Ермолаев Чувиров", kind: "газетная вырезка",
     place: "выселок Подгорный",
     note: "утерян отпускной билет; по отчеству брат Симеона Ермолаева, отец Ермолай пока гипотеза",
     url: "/zeitungsecke/1884-uteryannyi-bilet-chuvirova/"}],
