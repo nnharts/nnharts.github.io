@@ -18,6 +18,16 @@
   border-left:3px solid var(--accent,#2f5d5a);border-radius:0 6px 6px 0}
 .geo a{color:var(--accent)}
 .tag{display:inline-block;margin-top:10px;font-size:.86em;color:var(--ink-dim)}
+/* Текст слева, снимок справа: в один столбец фотография отбрасывала рассказ
+   далеко вниз, и читатель терял связь между ними. Просьба Никиты 19.08.2026.
+   На узком экране колонки схлопываются в одну. */
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:28px;align-items:start;margin:18px 0}
+.two-col figure{margin:0}
+.two-col figure img{width:100%;height:auto;display:block;border:1px solid var(--rule,#ddd4c2)}
+.two-col figcaption{font-size:.86em;color:var(--ink-dim);margin-top:6px;line-height:1.4}
+.two-col .family-history{margin-top:0}
+@media (max-width:760px){.two-col{grid-template-columns:1fr;gap:16px}}
 </style>
 <!-- og:auto -->
 <meta property="og:site_name" content="Fundus">
@@ -118,6 +128,7 @@
     которой не знал.</p>
   </section>
 
+  <div class="two-col">
   <section class="family-history">
     <h2>Спасительницу нашли, но опоздали на двенадцать лет</h2>
     <p>После публикации в газете имя установили: Мария Мюллер из общины Ванг, соседней с
@@ -129,10 +140,13 @@
     Безенридером они возложили венок на могилу.</p>
   </section>
 
-  <img class="clipping-image" src="mogila-mueller-1990-11.jpg" alt="Фотография из «Süddeutsche Zeitung»: четверо мужчин у могилы Марии Мюллер с венком, справа надгробие с надписью PETER MÜLLER и MARIA MÜLLER">
-  <p class="clipping-caption">«Süddeutsche Zeitung» (<span class="de">Южнонемецкая газета</span>),
-  24 ноября 1990 года. Слева направо: вице-консул Виктор Кусин, бургомистр Тони Ноймайер,
-  генеральный консул Николай М. Обертышев, бургомистр общины Ванг Мартин Безенридер.</p>
+  <figure>
+    <img src="mogila-mueller-1990-11.jpg" alt="Фотография из «Süddeutsche Zeitung»: четверо мужчин у могилы Марии Мюллер с венком, справа надгробие с надписью PETER MÜLLER и MARIA MÜLLER">
+    <figcaption>«Süddeutsche Zeitung» (<span class="de">Южнонемецкая газета</span>),
+    24 ноября 1990 года. Слева направо: вице-консул Виктор Кусин, бургомистр Тони Ноймайер,
+    генеральный консул Николай М. Обертышев, бургомистр общины Ванг Мартин Безенридер.</figcaption>
+  </figure>
+  </div>
 
   <blockquote class="transcript">
     <p class="de-orig">AM GRABE der Bäuerin Maria Müller, die während des Krieges entflohene

@@ -24,6 +24,16 @@ table.nat th:first-child,table.nat td:first-child{text-align:left}
 table.nat th{font-weight:600;font-size:.92em}
 table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
 .tablewrap{overflow-x:auto}
+/* Первая часть в две колонки: слева рассказ, справа вертикальная карта города.
+   Карта высокая, и в один столбец она отбрасывала текст далеко вниз.
+   На узком экране колонки схлопываются в одну (просьба Никиты 19.08.2026). */
+.two-col{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);
+  gap:28px;align-items:start;margin:18px 0}
+.two-col figure{margin:0}
+.two-col figure img{width:100%;height:auto;display:block;border:1px solid var(--rule,#ddd4c2)}
+.two-col figcaption{font-size:.86em;color:var(--ink-dim);margin-top:6px;line-height:1.4}
+.two-col .family-history{margin-top:0}
+@media (max-width:760px){.two-col{grid-template-columns:1fr;gap:16px}}
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin:16px 0}
 .gal figure{margin:0}
 .gal img{width:100%;height:auto;display:block;border:1px solid var(--rule,#ddd4c2)}
@@ -87,6 +97,7 @@ table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
     и через сорок девять лет его сын просил разрешения прийти за его могилой пешком.</p>
   </header>
 
+  <div class="two-col">
   <section class="family-history">
     <h2>Как появился лагерь</h2>
     <p>Осенью 1939 года городку на пять с небольшим тысяч жителей приказали построить лагерь
@@ -102,9 +113,14 @@ table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
     метров.</p>
   </section>
 
-  <img class="clipping-image" src="karta-mosburg.jpg" alt="План из книги: положение лагеря Шталаг VII A относительно города Мосбург" loading="lazy">
-  <p class="clipping-caption">Положение лагеря относительно города. План из книги города
-  Мосбург-на-Изаре, 1995 год.</p>
+  <figure>
+    <img src="karta-mosburg.jpg" loading="lazy" alt="Карта из книги: положение лагеря Шталаг VII A относительно города Мосбург, с пометками 1 казармы охраны и 2 лагерь военнопленных">
+    <figcaption><span class="de">Lage des Stalag VII A in der Stadt</span>, то есть
+    «положение Шталага VII A в городе». Внизу легенда: <span class="de">1 Wachpersonal-Unterkünfte</span>,
+    жильё охраны, и <span class="de">2 Gefangenenlager</span>, лагерь военнопленных.
+    Карта из книги города Мосбург-на-Изаре, 1995 год.</figcaption>
+  </figure>
+  </div>
 
   <section class="family-history">
     <h2>Кто где сидел: план лагеря</h2>
