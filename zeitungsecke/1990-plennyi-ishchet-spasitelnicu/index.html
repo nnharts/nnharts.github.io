@@ -40,6 +40,13 @@
 .two-col .family-history,.two-col .dek,.two-col p{max-width:none}
 .two-col figure img{max-height:76vh;object-fit:contain;object-position:top}
 @media (max-width:760px){.two-col{grid-template-columns:1fr;gap:16px}}
+.lb-open{display:inline-block;cursor:zoom-in}
+.lb-open img{transition:opacity .15s}
+.lb-open:hover img{opacity:.82}
+.lb-back{position:fixed;inset:0;background:rgba(20,18,15,.88);display:flex;
+  align-items:center;justify-content:center;padding:24px;z-index:999;cursor:zoom-out}
+.lb-back img{max-width:min(92vw,900px);max-height:92vh;width:auto;height:auto;
+  box-shadow:0 8px 40px rgba(0,0,0,.5)}
 </style>
 <!-- og:auto -->
 <meta property="og:site_name" content="Fundus">
@@ -197,7 +204,6 @@
     </div>
   </section>
 
-  <div class="two-col">
   <section class="family-history">
     <h2>Другой человек, другая история</h2>
     <p>В той же книге есть снимки Виктора Астафьева, лейтенанта Красной армии и пленного
@@ -207,15 +213,6 @@
     Ставим его здесь только потому, что оба снимка из одного собрания и оба о людях, вернувшихся
     в место своего плена.</p>
   </section>
-
-  <figure>
-    <img src="astafiev-voennyh-let.jpg" alt="Виктор Астафьев военных лет: портрет в пилотке и гимнастёрке с петлицами лейтенанта Красной армии">
-    <figcaption>Он же в военные годы: пилотка, гимнастёрка, на петлицах кубари младшего
-    командного состава. Снимок из заметки «Moosburger Zeitung» от 12 мая 1990 года под
-    заголовком «Für mich ist das ein sehr großes Wunder» (<span class="de">«Для меня это
-    очень большое чудо»</span>).</figcaption>
-  </figure>
-  </div>
 
   <img class="clipping-image" src="gazeta-1990-05-12.jpg" alt="Заметка «Moosburger Zeitung» от 12 мая 1990 года «Für mich ist das ein sehr großes Wunder» с портретом Виктора Астафьева военных лет">
   <p class="clipping-caption">«Moosburger Zeitung», 12 мая 1990 года. Вырезка вклеена в книгу
@@ -264,7 +261,7 @@
   </figure>
   </div>
 
-  <img class="clipping-image" style="max-width:72px;margin-left:0;margin-right:auto" src="cover.jpg" alt="Обложка книги о лагере Шталаг VII A в Мосбурге, акварель Герды Мадль-Крен">
+  <a class="lb-open" href="cover.jpg" title="Открыть обложку крупно"><img class="clipping-image" style="max-width:72px;margin-left:0;margin-right:auto" src="cover.jpg" alt="Обложка книги о лагере Шталаг VII A в Мосбурге, акварель Герды Мадль-Крен"></a>
   <p class="clipping-caption">Обложка издания. Акварель д-ра Герды Мадль-Крен, 1995 год.</p>
 
 <p class="attribution">Источник: «Das Kriegsgefangenen-Lager STALAG VII A, Moosburg in
@@ -287,5 +284,26 @@ Oberbayern» (<span class="de">Лагерь военнопленных Штал�
   </div>
 </footer>
 <script src="/footer.js" defer></script>
+<script>
+// Лайтбокс для обложки: клик открывает крупное изображение поверх страницы,
+// закрывается щелчком или клавишей Esc. Без скрипта ссылка просто откроет
+// картинку, поэтому ничего не ломается. Просьба Никиты 19.08.2026.
+document.addEventListener('click', function(e){
+  var a = e.target.closest && e.target.closest('a.lb-open');
+  if(!a) return;
+  e.preventDefault();
+  var back = document.createElement('div');
+  back.className = 'lb-back';
+  var big = document.createElement('img');
+  big.src = a.getAttribute('href');
+  big.alt = (a.querySelector('img') || {}).alt || '';
+  back.appendChild(big);
+  document.body.appendChild(back);
+  var close = function(){ back.remove(); document.removeEventListener('keydown', onKey); };
+  var onKey = function(ev){ if(ev.key === 'Escape') close(); };
+  back.onclick = close;
+  document.addEventListener('keydown', onKey);
+});
+</script>
 </body>
 </html>

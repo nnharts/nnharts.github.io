@@ -51,6 +51,13 @@ table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
 .gal img{width:100%;height:auto;display:block;border:1px solid var(--rule,#ddd4c2)}
 .gal figcaption{font-size:.84em;color:var(--ink-dim);margin-top:5px;line-height:1.35}
 .tag{display:inline-block;margin-top:10px;font-size:.86em;color:var(--ink-dim)}
+.lb-open{display:inline-block;cursor:zoom-in}
+.lb-open img{transition:opacity .15s}
+.lb-open:hover img{opacity:.82}
+.lb-back{position:fixed;inset:0;background:rgba(20,18,15,.88);display:flex;
+  align-items:center;justify-content:center;padding:24px;z-index:999;cursor:zoom-out}
+.lb-back img{max-width:min(92vw,900px);max-height:92vh;width:auto;height:auto;
+  box-shadow:0 8px 40px rgba(0,0,0,.5)}
 </style>
 <!-- og:auto -->
 <meta property="og:site_name" content="Fundus">
@@ -437,7 +444,7 @@ table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
     перепечатана статья с заголовком «Шталаг Мосбург не был идиллией».</p>
   </section>
 
-  <img class="clipping-image" style="max-width:72px;margin-left:0;margin-right:auto" src="cover.jpg" alt="Обложка книги о лагере Шталаг VII A в Мосбурге, акварель Герды Мадль-Крен, 1995" loading="lazy">
+  <a class="lb-open" href="cover.jpg" title="Открыть обложку крупно"><img class="clipping-image" style="max-width:72px;margin-left:0;margin-right:auto" src="cover.jpg" alt="Обложка книги о лагере Шталаг VII A в Мосбурге, акварель Герды Мадль-Крен, 1995" loading="lazy"></a>
   <p class="clipping-caption">Обложка издания. Акварель д-ра Герды Мадль-Крен, 1995 год.</p>
 
 <p class="attribution">Источник: «Das Kriegsgefangenen-Lager STALAG VII A, Moosburg in
@@ -465,5 +472,26 @@ Oberbayern. 5½ Jahre Lagergeschichte 1939-1945 / 50 Jahre Versöhnung und Freun
   </div>
 </footer>
 <script src="/footer.js" defer></script>
+<script>
+// Лайтбокс для обложки: клик открывает крупное изображение поверх страницы,
+// закрывается щелчком или клавишей Esc. Без скрипта ссылка просто откроет
+// картинку, поэтому ничего не ломается. Просьба Никиты 19.08.2026.
+document.addEventListener('click', function(e){
+  var a = e.target.closest && e.target.closest('a.lb-open');
+  if(!a) return;
+  e.preventDefault();
+  var back = document.createElement('div');
+  back.className = 'lb-back';
+  var big = document.createElement('img');
+  big.src = a.getAttribute('href');
+  big.alt = (a.querySelector('img') || {}).alt || '';
+  back.appendChild(big);
+  document.body.appendChild(back);
+  var close = function(){ back.remove(); document.removeEventListener('keydown', onKey); };
+  var onKey = function(ev){ if(ev.key === 'Escape') close(); };
+  back.onclick = close;
+  document.addEventListener('keydown', onKey);
+});
+</script>
 </body>
 </html>
