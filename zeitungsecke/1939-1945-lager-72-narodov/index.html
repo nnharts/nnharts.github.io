@@ -56,8 +56,11 @@ table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
 .lb-open:hover img{opacity:.82}
 .lb-back{position:fixed;inset:0;background:rgba(20,18,15,.88);display:flex;
   align-items:center;justify-content:center;padding:24px;z-index:999;cursor:zoom-out}
-.lb-back img{max-width:min(92vw,900px);max-height:92vh;width:auto;height:auto;
+.lb-back{flex-direction:column;gap:12px}
+.lb-back img{max-width:min(92vw,1100px);max-height:86vh;width:auto;height:auto;
   box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.lb-cap{color:#e8e2d6;font-size:.86em;max-width:min(92vw,1100px);text-align:center;line-height:1.4}
+.wrap .clipping-image,.wrap .gal img,.wrap .two-col figure img{cursor:zoom-in}
 </style>
 <!-- og:auto -->
 <meta property="og:site_name" content="Fundus">
@@ -473,25 +476,45 @@ Oberbayern. 5½ Jahre Lagergeschichte 1939-1945 / 50 Jahre Versöhnung und Freun
 </footer>
 <script src="/footer.js" defer></script>
 <script>
-// Лайтбокс для обложки: клик открывает крупное изображение поверх страницы,
-// закрывается щелчком или клавишей Esc. Без скрипта ссылка просто откроет
-// картинку, поэтому ничего не ломается. Просьба Никиты 19.08.2026.
-document.addEventListener('click', function(e){
-  var a = e.target.closest && e.target.closest('a.lb-open');
-  if(!a) return;
-  e.preventDefault();
-  var back = document.createElement('div');
-  back.className = 'lb-back';
-  var big = document.createElement('img');
-  big.src = a.getAttribute('href');
-  big.alt = (a.querySelector('img') || {}).alt || '';
-  back.appendChild(big);
-  document.body.appendChild(back);
-  var close = function(){ back.remove(); document.removeEventListener('keydown', onKey); };
-  var onKey = function(ev){ if(ev.key === 'Escape') close(); };
-  back.onclick = close;
-  document.addEventListener('keydown', onKey);
-});
+// Лайтбокс для ВСЕХ снимков заметки: клик по любой иллюстрации открывает её
+// крупно поверх страницы, закрывается щелчком или клавишей Esc. Работает по
+// самим картинкам, без обёрток вокруг каждой: их тут под шесть десятков.
+// Обложка остаётся ссылкой, поэтому без скриптов хотя бы она откроется.
+// Просьба Никиты 19.08.2026.
+(function(){
+  var SEL = '.wrap .clipping-image, .wrap .gal img, .wrap .two-col figure img, a.lb-open img';
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!t || t.tagName !== 'IMG' || !t.matches(SEL)) {
+      var a = t.closest && t.closest('a.lb-open');
+      if(!a) return;
+      t = a.querySelector('img');
+      if(!t) return;
+    }
+    e.preventDefault();
+    var back = document.createElement('div');
+    back.className = 'lb-back';
+    var big = document.createElement('img');
+    big.src = t.getAttribute('src');
+    big.alt = t.alt || '';
+    var cap = document.createElement('div');
+    cap.className = 'lb-cap';
+    var fig = t.closest('figure');
+    var next = t.parentElement && t.parentElement.nextElementSibling;
+    var capText = fig && fig.querySelector('figcaption')
+        ? fig.querySelector('figcaption').innerText
+        : (t.nextElementSibling && t.nextElementSibling.classList.contains('clipping-caption')
+            ? t.nextElementSibling.innerText : '');
+    cap.textContent = (capText || '').slice(0, 300);
+    back.appendChild(big);
+    if(cap.textContent) back.appendChild(cap);
+    document.body.appendChild(back);
+    var close = function(){ back.remove(); document.removeEventListener('keydown', onKey); };
+    var onKey = function(ev){ if(ev.key === 'Escape') close(); };
+    back.onclick = close;
+    document.addEventListener('keydown', onKey);
+  });
+})();
 </script>
 </body>
 </html>
