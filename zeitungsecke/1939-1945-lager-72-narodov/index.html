@@ -33,6 +33,12 @@ table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
 .two-col figure img{width:100%;height:auto;display:block;border:1px solid var(--rule,#ddd4c2)}
 .two-col figcaption{font-size:.86em;color:var(--ink-dim);margin-top:6px;line-height:1.4}
 .two-col .family-history{margin-top:0}
+/* Текст в полную ширину страницы. В общем стиле сайта у текста мера 62 знака,
+   и это верно для страниц без иллюстраций. Здесь же снимки идут во всю ширину,
+   и узкая колонка рядом с ними читалась как поломка вёрстки: справа зияло
+   пустое поле. Просьба Никиты 19.08.2026. */
+.wrap>.family-history,.wrap>.dek,.wrap>p.clipping-caption,.page .dek{max-width:none}
+.family-history p{max-width:none}
 /* Внутри колонки текст должен заполнять её целиком: общесайтовая мера в 62
    знака оставляла справа провал, а рядом стояла высокая картинка, и блок
    выглядел полупустым. Картинку тоже придерживаем по высоте, чтобы колонки
