@@ -33,6 +33,12 @@ table.nat td.sov{font-weight:700;color:var(--accent,#2f5d5a)}
 .two-col figure img{width:100%;height:auto;display:block;border:1px solid var(--rule,#ddd4c2)}
 .two-col figcaption{font-size:.86em;color:var(--ink-dim);margin-top:6px;line-height:1.4}
 .two-col .family-history{margin-top:0}
+/* Внутри колонки текст должен заполнять её целиком: общесайтовая мера в 62
+   знака оставляла справа провал, а рядом стояла высокая картинка, и блок
+   выглядел полупустым. Картинку тоже придерживаем по высоте, чтобы колонки
+   были соразмерны. Правки по замечаниям Никиты 19.08.2026. */
+.two-col .family-history,.two-col .dek,.two-col p{max-width:none}
+.two-col figure img{max-height:76vh;object-fit:contain;object-position:top}
 @media (max-width:760px){.two-col{grid-template-columns:1fr;gap:16px}}
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin:16px 0}
 .gal figure{margin:0}

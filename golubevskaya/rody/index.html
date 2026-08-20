@@ -213,9 +213,13 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
   /* на телефоне плашка с генеалогом уходит вниз страницы: сверху человек
      пришёл смотреть роды, предложение услуги уместно после материала */
   .g-wrap{display:flex;flex-direction:column}
-  /* плашка уходит вниз, но остаётся ВЫШЕ подстрочных примечаний (.g-foot) */
-  .g-wrap>.expert{order:90;margin:28px 0 8px}
-  .g-wrap>.g-foot{order:95}
+  /* Порядок внизу: сначала пояснение к справочнику (что значат черта, знак
+     вопроса и числа), потом плашка генеалога, у самого подвала. Человек
+     дочитал роды, ему нужно объяснение прочитанного, а предложение услуги
+     идёт последним. Порядок переставлен по замечанию Никиты 19.08.2026,
+     до этого плашка стояла выше пояснения. */
+  .g-wrap>.g-foot{order:90}
+  .g-wrap>.expert{order:95;margin:24px 0 8px}
   /* восемь счётчиков на телефоне встают ровно в два ряда по четыре:
      display:contents поднимает оба блока в общую сетку, подписи переносятся */
   .g-statsrow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 10px;
@@ -497,7 +501,7 @@ const FAMILIO_ICON='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAA
 // несколько секунд смотрел в пустой экран, не дождавшись списка родов, и уходил
 // (замечено Никитой по Метрике 18.08.2026). Список рода нужен сразу, а
 // подробности только для того рода, который открыли.
-const HEAVY_URL = 'rody-data.json?v=2ea523cd';
+const HEAVY_URL = 'rody-data.json?v=a7b8460a';
 const D = JSON.parse(document.getElementById('g-data').textContent);
 const clans = D.clans;
 let HEAVY_READY = false, HEAVY_WANTED = null;
