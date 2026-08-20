@@ -184,7 +184,10 @@ h1 {
 .dek {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PT Sans", sans-serif;
   color: var(--ink-dim);
-  max-width: 62ch;
+  /* Мера снята 19.08.2026 по решению Никиты: текст идёт во всю ширину
+     страницы. Прежние 62 знака хороши для страниц без иллюстраций, но у нас
+     снимки и таблицы идут во всю ширину, и узкая колонка рядом с ними
+     читалась как поломка вёрстки, с пустым полем справа. */
   font-size: 0.98rem;
   margin: 0 0 18px;
 }
@@ -659,7 +662,7 @@ a.entry-link:hover .entry-title { color: var(--accent); }
   margin-top: 44px;
   padding-top: 32px;
   border-top: 1px solid var(--rule);
-  max-width: 62ch;
+  /* Мера снята 19.08.2026, см. пояснение у .dek */
 }
 .family-history .eyebrow { margin-bottom: 8px; }
 .family-history h2 {
