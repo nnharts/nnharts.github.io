@@ -9,6 +9,13 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="stylesheet" href="/style.css?v=07dea592">
 <style>
+.g-ish-docs{margin:4px 0 6px;padding:10px 12px;background:var(--accent-soft,#f2efe6);
+  border-left:3px solid var(--accent,#2f5d5a);border-radius:0 6px 6px 0;font-size:.9rem}
+.g-ish-docs .lb{display:block;font-weight:600;margin-bottom:4px}
+.g-ish-docs ul{margin:0;padding-left:18px}
+.g-ish-doc{display:block;margin-top:4px;color:var(--ink-dim,#736a5c);font-size:.85rem}
+.g-famnote{margin:6px 0 2px;padding:7px 10px;background:var(--accent-soft,#f2efe6);border-left:3px solid var(--accent,#2f5d5a);border-radius:0 5px 5px 0;font-size:.83rem;line-height:1.45;color:var(--ink,#242019)}
+
 /* локальные стили справочника, поверх общего style.css; префикс g- против коллизий */
 .g-wrap{max-width:1160px;margin:0 auto;padding:0 24px}
 .g-stats{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 8px}
@@ -24,7 +31,14 @@
 .g-search input{width:100%;padding:7px 10px;border:1px solid var(--rule);background:var(--card);
   color:var(--ink);font:inherit;font-size:.9em;border-radius:2px}
 .g-search input:focus{outline:2px solid var(--focus);outline-offset:1px}
-.g-clans{list-style:none;margin:0;padding:0;max-height:74vh;overflow-y:auto}
+/* Все три списка (роды, места приписки, места исхода) не выше семи строк:
+   иначе левая колонка тянется на несколько экранов и до второго списка
+   надо мотать. Просьба Никиты 15.08.2026. Строка ~26px, 7 строк ~184px. */
+.g-clans{list-style:none;margin:0;padding:0;max-height:184px;overflow-y:auto}
+.g-side-note{padding:6px 16px 0;font-size:.8em;color:var(--ink-dim)}
+.g-ish-list{list-style:none;margin:0;padding:0}
+.g-ish-row{padding:7px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.g-ish-row:hover{background:var(--paper-2)}
 .g-clans li{padding:5px 16px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;
   border-left:3px solid transparent}
 .g-clans li:hover{background:var(--paper-2)}
@@ -196,9 +210,13 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
   /* на телефоне плашка с генеалогом уходит вниз страницы: сверху человек
      пришёл смотреть роды, предложение услуги уместно после материала */
   .g-wrap{display:flex;flex-direction:column}
-  /* плашка уходит вниз, но остаётся ВЫШЕ подстрочных примечаний (.g-foot) */
-  .g-wrap>.expert{order:90;margin:28px 0 8px}
-  .g-wrap>.g-foot{order:95}
+  /* Порядок внизу: сначала пояснение к справочнику (что значат черта, знак
+     вопроса и числа), потом плашка генеалога, у самого подвала. Человек
+     дочитал роды, ему нужно объяснение прочитанного, а предложение услуги
+     идёт последним. Порядок переставлен по замечанию Никиты 19.08.2026,
+     до этого плашка стояла выше пояснения. */
+  .g-wrap>.g-foot{order:90}
+  .g-wrap>.expert{order:95;margin:24px 0 8px}
   /* восемь счётчиков на телефоне встают ровно в два ряда по четыре:
      display:contents поднимает оба блока в общую сетку, подписи переносятся */
   .g-statsrow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 10px;
@@ -404,9 +422,9 @@ document.getElementById('g-subform').addEventListener('submit',async ev=>{
   let counts={};
   try{ const r=await fetch(FOTO_API+'/subscribe/counts'); if(r.ok) counts=await r.json(); }catch(e){}
   const plural=n=>{ const d=n%10, dd=n%100;
-    if(d===1&&dd!==11) return 'читатель';
-    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'читателя';
-    return 'читателей'; };
+    if(d===1&&dd!==11) return 'потомок';
+    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'потомка';
+    return 'потомков'; };
   const fill=()=>document.querySelectorAll('.g-subcount[data-t]:not([data-done])').forEach(el=>{
     el.dataset.done='1';
     const n=counts[el.dataset.t]||0;

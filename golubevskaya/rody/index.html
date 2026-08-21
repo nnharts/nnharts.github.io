@@ -2164,7 +2164,7 @@ document.getElementById('g-tform').addEventListener('submit',async ev=>{
 </script>
 <script>
 // адрес foto-api объявлен выше, до первого использования
-// Счётчик подписчиков « · N читателей» справа от кнопки. Карточки рендерятся по
+// Счётчик подписчиков « · N потомков» справа от кнопки. Карточки рендерятся по
 // мере навигации (SPA), поэтому число проставляем на появление span'а через
 // MutationObserver, а не один раз при загрузке. Нулей сервер не отдаёт - тогда
 // счётчик просто не появляется.
@@ -2173,9 +2173,9 @@ document.getElementById('g-tform').addEventListener('submit',async ev=>{
   try{ const r=await fetch('/golubevskaya/foto-api/subscribe/counts');
        if(r.ok) counts=await r.json(); }catch(e){}
   const plural=n=>{ const d=n%10, dd=n%100;
-    if(d===1&&dd!==11) return 'читатель';
-    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'читателя';
-    return 'читателей'; };
+    if(d===1&&dd!==11) return 'потомок';
+    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'потомка';
+    return 'потомков'; };
   const fill=()=>document.querySelectorAll('.g-subcount[data-t]:not([data-done])').forEach(el=>{
     el.dataset.done='1';
     const n=counts[el.dataset.t]||0;

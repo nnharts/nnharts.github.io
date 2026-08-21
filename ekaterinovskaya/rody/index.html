@@ -520,15 +520,15 @@ const CLAN_NOTES={"харченко": "В станице Екатериновс�
 const DNA_CLANS=["стасюк", "сусь", "харченко", "косуля"];
 const SUB_BOT='Hartschenberg_tracking_bot';
 const FOTO_API='/golubevskaya/foto-api';
-// Счётчик подписчиков « · N читателей» у кнопки. Ключи с приставкой ekat-.
+// Счётчик подписчиков « · N потомков» у кнопки. Ключи с приставкой ekat-.
 // CSS (.g-subcount, .g-actions по центру) наследуется из стиля Голубевской.
 (async()=>{
   let counts={};
   try{ const r=await fetch(FOTO_API+'/subscribe/counts'); if(r.ok) counts=await r.json(); }catch(e){}
   const plural=n=>{ const d=n%10, dd=n%100;
-    if(d===1&&dd!==11) return 'читатель';
-    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'читателя';
-    return 'читателей'; };
+    if(d===1&&dd!==11) return 'потомок';
+    if(d>=2&&d<=4&&(dd<12||dd>14)) return 'потомка';
+    return 'потомков'; };
   const fill=()=>document.querySelectorAll('.g-subcount[data-t]:not([data-done])').forEach(el=>{
     el.dataset.done='1';
     const n=counts[el.dataset.t]||0;
