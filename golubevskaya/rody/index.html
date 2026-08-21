@@ -501,7 +501,7 @@ const FAMILIO_ICON='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAA
 // несколько секунд смотрел в пустой экран, не дождавшись списка родов, и уходил
 // (замечено Никитой по Метрике 18.08.2026). Список рода нужен сразу, а
 // подробности только для того рода, который открыли.
-const HEAVY_URL = 'rody-data.json?v=c397467a';
+const HEAVY_URL = 'rody-data.json?v=b2f4424a';
 const D = JSON.parse(document.getElementById('g-data').textContent);
 const clans = D.clans;
 let HEAVY_READY = false, HEAVY_WANTED = null;
@@ -925,6 +925,13 @@ function famCard(f, depth, amb){
     return `<div class="g-mar"><b>⚭ ${m.year??'?'}</b> ${scanMark(m.line)} сын ${m.groom||'?'} женился${m.bride?` на ${m.bride}`:''}${m.bride_father?` (дочь ${m.bride_father})`:''}</div>`;
   }).join('');
   const extMar = extMarriageLine(f.key);
+  // Смерть самого главы двора. До 21.08.2026 карточка показывала смерть жены и
+  // зачёркивала умерших детей, а собственная смерть главы не показывалась вовсе:
+  // в famCard для неё просто не было ветки. Записи с пустым rel это и есть
+  // «умер сам». Просьба Никиты 21.08.2026 по Никандру Димитриеву.
+  const own = f.deaths.filter(d=>!d.rel).map(d=>
+    `<div class="g-dth">${d.line?scanMark(d.line):''}† ${d.name||f.display} ${d.year||''}`
+    +`${d.age?` (${d.age} л.)`:''}${d.cause?`, ${d.cause.toLowerCase()}`:''}</div>`).join('');
   const wdth = f.deaths.filter(d=>d.rel==='жена').map(d=>`<div class="g-dth">${d.line?scanMark(d.line):''}† жена ${d.name||''} ${d.year||''}${d.age?` (${d.age} л.)`:''}</div>`).join('');
   return `<div class="g-fam ${cls}"${ind}>
     <span class="span g-mono">${span}</span>
@@ -934,7 +941,7 @@ function famCard(f, depth, amb){
           <ul class="g-kids">${g.items.map(kidLi).join('')}</ul>`).join('')
       : `<div class="wife">∞ ${wives}</div>
     ${kids?`<ul class="g-kids">${kids}</ul>`:''}`}
-    ${fnote}${knotes}${extMar}${mars}${wdth}
+    ${fnote}${knotes}${extMar}${mars}${own}${wdth}
   </div>`;
 }
 
