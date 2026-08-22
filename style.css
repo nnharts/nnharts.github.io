@@ -144,6 +144,11 @@ a { color: inherit; }
   font-weight: 600;
   border-bottom-color: var(--accent);
 }
+/* Значок активного пункта меню: полной яркости и терракотовый, как
+   подчёркивание. У остальных пунктов значок приглушён, чтобы шапка не рябила.
+   Замечание Никиты 22.08.2026: в эскизе так было, а в вёрстке я забыл. */
+.section-link.active svg { opacity: 1; color: var(--accent); }
+.section-link:hover svg { opacity: .8; }
 .section-link.disabled {
   color: var(--rule);
   cursor: default;
