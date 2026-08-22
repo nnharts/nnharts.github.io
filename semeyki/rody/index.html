@@ -20,6 +20,12 @@
 .g-wrap{max-width:1160px;margin:0 auto;padding:0 24px}
 .g-stats{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 8px}
 .g-stats b{font-size:1.3em;display:block}
+/* Прирост за неделю степенью у числа. Плюс зелёный, минус терракотовый,
+   оба цвета из палитры сайта. Просьба Никиты 22.08.2026. */
+.span-w{display:block;font-style:italic;opacity:.85}
+.maiden{margin:0;padding:0;font-size:.9em;color:var(--ink-dim)}
+.g-delta{font-size:.5em;vertical-align:super;line-height:0;margin-left:1px;cursor:help}
+.g-delta.up{color:var(--grow)}.g-delta.down{color:var(--ink-dim)}
 .g-statsrow{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
 .g-stats2{justify-content:flex-end;text-align:right}
 .g-stats span{color:var(--ink-dim);font-size:.72em;text-transform:uppercase;letter-spacing:.08em;
@@ -46,6 +52,25 @@
 .g-clans .n{color:var(--ink-dim)}
 .g-side-h{margin:24px 0 6px;padding:14px 16px 0;border-top:2px solid var(--ink);
   font-size:.78em;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-dim)}
+/* Первый заголовок колонки: без верхней черты, её уже рисует .g-cols.
+   Поймано Никитой 22.08.2026: над «Рода» появилась лишняя палка. */
+.g-side-h1{margin-top:0;padding-top:0;border-top:0}
+/* Сворачивание списков на узком экране. Число рядом с заголовком говорит,
+   сколько внутри, чтобы не раскрывать наугад. Выбор Никиты 22.08.2026,
+   вариант 2. На десктопе всё раскрыто и заголовки не кликаются. */
+@keyframes g-mapfold{0%,100%{transform:scaleX(1);filter:saturate(.15)}45%,55%{transform:scaleX(.72);filter:saturate(1)}}
+.g-mapico{vertical-align:-4px;transform-origin:center;animation:g-mapfold 3.4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.g-mapico{animation:none;filter:none}}
+.g-foldn{color:var(--accent);font-weight:400;font-size:1.6em;letter-spacing:0}
+.g-foldx{display:none}
+@media(max-width:760px){
+  /* Кнопки рода прижимаются влево и уходят под заголовок: на телефоне до
+     правого края тянуться неудобно. Просьба Никиты 22.08.2026. */
+  .g-actions{margin-left:0;width:100%;justify-content:flex-start}
+  .g-side-h[data-fold]{cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .g-foldx{display:inline;font-size:.9em;color:var(--ink-dim)}
+  .g-fold.closed{display:none}
+}
 .g-mono{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:.82em}
 .g-main{flex:1;min-width:0;padding:20px 0 80px 26px}
 .g-clan-h{font-size:clamp(20px,2.6vw,27px);margin:4px 0 2px;font-weight:700}
@@ -229,7 +254,7 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
   .g-side{width:100%;flex:none;border-right:none;border-bottom:1px solid var(--rule)}
   /* на телефоне оба списка показывают примерно три строки: дальше прокрутка
      внутри самого списка. Иначе до карточек людей приходится мотать пол-экрана */
-  .g-clans{max-height:104px}
+  .g-clans{max-height:132px}
   .g-side{padding-bottom:14px}
   /* поиск на телефоне: во всю ширину, шрифт как у названий родов в списке.
      Кегль не ниже 16px намеренно: при меньшем iOS зумит страницу на фокусе */
@@ -243,6 +268,9 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
 }
 .page .dek{max-width:none;text-align:justify}
 .g-legend{font-size:.85em;color:var(--ink-dim);margin:6px 0 0}
+/* Пара «значок и подпись» переносится целиком, иначе на узком экране
+   значок остаётся на строке, а подпись уезжает вниз. 22.08.2026. */
+.g-legend .li{white-space:nowrap}
 
 .g-filt{display:flex;gap:6px;padding:0 14px 10px}
 .g-filt button{border:1px solid var(--rule);background:transparent;color:var(--ink);
