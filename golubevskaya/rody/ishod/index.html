@@ -12,6 +12,13 @@
 <style>
 .i-wrap{max-width:1160px;margin:0 auto;padding:0 24px}
 #map{height:520px;border:1px solid var(--rule);border-radius:2px;margin:18px 0 26px}
+.i-fotos{display:flex;gap:12px;margin:18px 0 0;flex-wrap:wrap}
+.i-fotos figure{flex:1 1 0;margin:0;min-width:180px}
+.i-fotos img{width:100%;height:120px;object-fit:cover;display:block;border:1px solid var(--rule);cursor:zoom-in}
+.i-fotos figcaption{font-size:.78em;color:var(--ink-dim);margin-top:5px;line-height:1.35}
+.i-lbbox{position:fixed;inset:0;background:rgba(20,17,12,.9);display:flex;align-items:center;justify-content:center;z-index:9999;cursor:zoom-out;padding:24px}
+.i-lbbox img{max-width:96vw;max-height:92vh;object-fit:contain}
+@media(max-width:760px){.i-fotos figure{flex:1 1 100%}.i-fotos img{height:150px}}
 .i-list{list-style:none;margin:0;padding:0}
 .i-list li{padding:10px 0;border-bottom:1px dotted var(--rule)}
 .i-list .who{color:var(--ink-dim);font-size:.92em;margin-top:2px}
@@ -26,7 +33,7 @@
 <meta property="og:url" content="https://fundus.hartschenberg.de/golubevskaya/rody/ishod/">
 <meta property="og:title" content="Места исхода родов Голубевской">
 <meta property="og:description" content="Откуда прибыли роды станицы Голубевской (Борохудзир, Семиречье): карта миграций и список мест исхода со ссылками на карточки населённых пунктов Familio.">
-<meta property="og:image" content="https://fundus.hartschenberg.de/og-default.png">
+<meta property="og:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/ishod/foto/1913_pereselency-malorosy.jpg">
 <meta property="og:locale" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 <!-- /og:auto -->
@@ -70,6 +77,24 @@
     казаки Кокчетавского уезда (1880) и другие. Терракотовая точка - сама станица,
     тёмные точки - места исхода; клик по точке показывает роды.</p>
   </header>
+  <!-- Три снимка Семиречья 1913 года над картой: переселенцы в дороге и
+       станица тех же лет. Высота держится в 23% от высоты карты, подпись
+       повторяет описание на russiainphoto с годом и ссылкой на источник,
+       клик открывает снимок в лайтбоксе. Просьба Никиты 22.08.2026. -->
+  <div class="i-fotos">
+    <figure>
+      <a href="foto/1913_pereselency-malorosy.jpg" class="i-lb"><img src="foto/1913_pereselency-malorosy.jpg" alt="Переселенцы-малоросы в Семиречье" loading="lazy"></a>
+      <figcaption>«Переселенцы-малоросы в Семиречье», апрель - октябрь 1913, Туркестанское генерал-губернаторство, Семиреченская обл.. Источник: <a href="https://russiainphoto.ru/photos/366992/" target="_blank" rel="noopener noreferrer">russiainphoto.ru</a></figcaption>
+    </figure>
+    <figure>
+      <a href="foto/1913_krestyane-pereselency.jpg" class="i-lb"><img src="foto/1913_krestyane-pereselency.jpg" alt="Крестьяне-переселенцы в Семиречье" loading="lazy"></a>
+      <figcaption>«Крестьяне-переселенцы в Семиречье», апрель - октябрь 1913, Туркестанское генерал-губернаторство, Семиреченская обл.. Источник: <a href="https://russiainphoto.ru/photos/366991/" target="_blank" rel="noopener noreferrer">russiainphoto.ru</a></figcaption>
+    </figure>
+    <figure>
+      <a href="foto/1913_stanica-nadezhdinskaya.jpg" class="i-lb"><img src="foto/1913_stanica-nadezhdinskaya.jpg" alt="Станица Надеждинская" loading="lazy"></a>
+      <figcaption>«Станица Надеждинская», 1913 год, Семиреченская обл., Верненский у., станица Надеждинская (Иссык). Источник: <a href="https://russiainphoto.ru/photos/348933/" target="_blank" rel="noopener noreferrer">russiainphoto.ru</a></figcaption>
+    </figure>
+  </div>
   <div id="map"></div>
   <ul class="i-list">
 <li><b>Богородская волость, Томский уезд и губерния</b> <span class="approx">(на карте - примерно, уровень уезда)</span><div class="who">роды: <a href="../#rod:васильев">Васильевы</a> (1876 г.), <a href="../#rod:голубев">Голубевы</a> (1876 г.), <a href="../#rod:данилов">Даниловы</a> (1876 г.), <a href="../#rod:ерков">Ерковы</a> (1876 г.), <a href="../#rod:малочкин">Малочкины</a> (1876 г.), <a href="../#rod:михайлов">Михайловы</a> (1876 г.), <a href="../#rod:салтанов">Салтановы</a> (1876 г.), <a href="../#rod:сосин">Сосины</a> (1876 г.), <a href="../#rod:соснов">Сосновы</a> (1876 г.), <a href="../#rod:ступкин">Ступкины</a> (1876 г.), <a href="../#rod:фомин">Фомины</a> (1876 г.), <a href="../#rod:хохлов">Хохловы</a> (1876 г.)</div></li>
@@ -120,6 +145,24 @@ MARKERS.forEach(m=>{
     <a href="https://metrika.yandex.ru/stat/?id=111205749&amp;from=informer" target="_blank" rel="nofollow noopener"><img referrerpolicy="no-referrer" src="https://informer.yandex.ru/informer/111205749/1_0_FFFEF0FF_E5DED0FF_0_uniques" width="80" height="15" style="border:0;display:block" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (уникальные посетители)"></a>
   </div>
 </footer>
-<script src="/footer.js" defer></script>
+<script src="/footer.js" defer>
+// Лайтбокс для снимков над картой: клик открывает крупно, повторный клик
+// или Esc закрывает. 22.08.2026.
+document.querySelectorAll('.i-lb').forEach(function(a){
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    var box = document.createElement('div');
+    box.className = 'i-lbbox';
+    var img = document.createElement('img');
+    img.src = a.getAttribute('href');
+    box.appendChild(img);
+    function off(){ box.remove(); document.removeEventListener('keydown', esc); }
+    function esc(ev){ if(ev.key === 'Escape') off(); }
+    box.addEventListener('click', off);
+    document.addEventListener('keydown', esc);
+    document.body.appendChild(box);
+  });
+});
+</script>
 </body>
 </html>
