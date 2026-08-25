@@ -312,5 +312,72 @@
   </div>
 </footer>
 <script src="/footer.js" defer></script>
+<!-- хэштеги снимка: правятся в админке, см. /admin#lichtbilder -->
+<style>
+.lb-tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.lb-tag{font:400 .82em/1 -apple-system,system-ui,sans-serif;color:var(--accent);
+  border:1px solid var(--rule);border-radius:12px;padding:4px 10px;background:transparent;
+  cursor:pointer;text-decoration:none}
+.lb-tag:hover{background:var(--paper-2)}
+.lb-tag.active{border-color:var(--accent);font-weight:700}
+</style>
+<script>
+(function(){
+  var list = document.getElementById('entry-list');
+  var cloud = document.getElementById('year-cloud');
+  if(!list || !cloud) return;
+  var box = document.createElement('div');
+  box.className = 'lb-tags';
+  box.id = 'lb-tagcloud';
+  cloud.parentNode.insertBefore(box, cloud.nextSibling);
+  fetch('/golubevskaya/foto-api/lichtbilder/tags').then(function(r){ return r.ok ? r.json() : {}; }).then(function(all){
+    var entries = Array.prototype.slice.call(list.querySelectorAll('li.entry'));
+    var known = {};
+    entries.forEach(function(li){
+      var a = li.querySelector('a[href]');
+      var slug = a ? a.getAttribute('href').replace(/\/+$/,'').split('/').pop() : '';
+      var tags = all[slug] || [];
+      li.dataset.tags = tags.join(' ');
+      tags.forEach(function(t){ known[t] = 1; });
+      if(tags.length){
+        var box2 = li.querySelector('.entry-text');
+        if(box2 && !box2.querySelector('.lb-tags')){
+          var d = document.createElement('div');
+          d.className = 'lb-tags';
+          d.innerHTML = tags.map(function(t){ return '<span class="lb-tag">' + t + '</span>'; }).join('');
+          box2.appendChild(d);
+        }
+      }
+    });
+    var all_t = Object.keys(known).sort();
+    if(!all_t.length) return;
+    box.innerHTML = all_t.map(function(t){
+      return '<button class="lb-tag" data-tag="' + t + '">' + t + '</button>';
+    }).join('');
+    var cur = '';
+    function applyTag(){
+      entries.forEach(function(li){
+        var has = !cur || (li.dataset.tags || '').split(' ').indexOf(cur) >= 0;
+        li.style.display = has ? '' : 'none';
+      });
+    }
+    box.addEventListener('click', function(e){
+      var b = e.target.closest('.lb-tag');
+      if(!b) return;
+      var was = b.classList.contains('active');
+      box.querySelectorAll('.lb-tag').forEach(function(x){ x.classList.remove('active'); });
+      cur = was ? '' : b.dataset.tag;
+      if(!was) b.classList.add('active');
+      applyTag();
+    });
+    var m = location.hash.match(/tag=([^&]+)/);
+    if(m){
+      var want = '#' + decodeURIComponent(m[1]);
+      var btn = box.querySelector('[data-tag="' + want + '"]');
+      if(btn) btn.click();
+    }
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>

@@ -92,5 +92,30 @@
   </div>
 </footer>
 <script src="/footer.js" defer></script>
+<!-- хэштеги снимка: правятся в админке, см. /admin#lichtbilder -->
+<style>
+.lb-tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.lb-tag{font:400 .82em/1 -apple-system,system-ui,sans-serif;color:var(--accent);
+  border:1px solid var(--rule);border-radius:12px;padding:4px 10px;background:transparent;
+  cursor:pointer;text-decoration:none}
+.lb-tag:hover{background:var(--paper-2)}
+.lb-tag.active{border-color:var(--accent);font-weight:700}
+</style>
+<div class="lb-tags" id="lb-tags" hidden></div>
+<script>
+(function(){
+  var slug = location.pathname.replace(/\/+$/,'').split('/').pop();
+  fetch('/golubevskaya/foto-api/lichtbilder/tags').then(function(r){ return r.ok ? r.json() : {}; }).then(function(all){
+    var tags = all[slug] || [];
+    if(!tags.length) return;
+    var box = document.getElementById('lb-tags');
+    box.hidden = false;
+    box.innerHTML = tags.map(function(t){
+      return '<a class="lb-tag" href="/lichtbilder/#tag=' + encodeURIComponent(t.slice(1)) + '">'
+             + t + '</a>';
+    }).join('');
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>
