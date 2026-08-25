@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/loktev.jpg?v=9c475dabf3e4">
 </head><body>
 <p>Открываю род Локтевы. <a href="/golubevskaya/rody/#rod:loktev">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:loktev");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:loktev"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

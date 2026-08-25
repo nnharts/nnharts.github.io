@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/malochkin.jpg?v=5ef0cc09e218">
 </head><body>
 <p>Открываю род Малочкины. <a href="/golubevskaya/rody/#rod:malochkin">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:malochkin");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:malochkin"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/glikeriya.jpg?v=4b6ed87a5f6a">
 </head><body>
 <p>Открываю род Гликерия. <a href="/golubevskaya/rody/#rod:glikeriya">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:glikeriya");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:glikeriya"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

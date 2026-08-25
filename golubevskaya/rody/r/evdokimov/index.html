@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/evdokimov.jpg?v=dee59fc1d130">
 </head><body>
 <p>Открываю род Евдокимовы. <a href="/golubevskaya/rody/#rod:evdokimov">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:evdokimov");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:evdokimov"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

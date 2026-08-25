@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/a-podpiska.jpg?v=5be7545b80df">
 </head><body>
 <p>Открываю форму «Подписаться». <a href="/golubevskaya/rody/#rod:vavnih:podpiska">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:vavnih:podpiska");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:vavnih:podpiska"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

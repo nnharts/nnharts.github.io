@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/popinov.jpg?v=741378b0ceb0">
 </head><body>
 <p>Открываю род Попиновы. <a href="/golubevskaya/rody/#rod:popinov">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:popinov");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:popinov"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

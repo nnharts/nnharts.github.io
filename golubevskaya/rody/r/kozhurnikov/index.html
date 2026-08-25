@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/kozhurnikov.jpg?v=d9c02a27360e">
 </head><body>
 <p>Открываю род Кожурниковы. <a href="/golubevskaya/rody/#rod:kozhurnikov">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:kozhurnikov");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:kozhurnikov"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

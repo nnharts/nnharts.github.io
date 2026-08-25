@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/shadrin.jpg?v=a4da8d0f8737">
 </head><body>
 <p>Открываю род Шадрины. <a href="/golubevskaya/rody/#rod:shadrin">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:shadrin");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:shadrin"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>

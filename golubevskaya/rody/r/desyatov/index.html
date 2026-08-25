@@ -15,5 +15,11 @@
 <meta name="twitter:image" content="https://fundus.hartschenberg.de/golubevskaya/rody/og/desyatov.jpg?v=c14370c1f12f">
 </head><body>
 <p>Открываю род Десятовы. <a href="/golubevskaya/rody/#rod:desyatov">Перейти вручную</a>.</p>
-<script>location.replace("/golubevskaya/rody/#rod:desyatov");</script>
+<script>
+// Ссылкой можно поделиться не родом целиком, а одним воспоминанием: тогда в
+// адресе визитки стоит ?tale=<id>, и его надо донести до самой страницы
+// якорем. Просьба Никиты 26.08.2026.
+var _t=new URLSearchParams(location.search).get('tale');
+location.replace("/golubevskaya/rody/#rod:desyatov"+(_t?':tale:'+encodeURIComponent(_t):''));
+</script>
 </body></html>
