@@ -1220,6 +1220,54 @@ async function loadUserFotos(kind,target){
   }catch(e){}
 }
 
+// Рассказы потомков пекутся в страницу при сборке. Одобренный после сборки
+// иначе ждал бы следующей выкатки, поэтому подтягиваем их и на лету, сверяя по
+// id: уже испечённые не задваиваются. Перенесено из справочника Голубевской
+// 02.09.2026 - до этого на Екатериновской одобренный рассказ не показывался
+// вообще ничем (ни живьём, ни пересборкой: манифест пуст и никем не пишется).
+// Регулярок здесь нет намеренно: этот JS лежит внутри тройной строки Python,
+// и обратные слеши в ней съедаются (грабли из verstka.md). По той же причине
+// в комментариях нельзя писать тройную кавычку - она закроет шаблон.
+const SLUG2CLAN={}; DATA.forEach(c=>{SLUG2CLAN[slug(c.name)]=c.name;});
+function taleSign(author, kinship){
+  const p=String(author||'').trim().split(' ').filter(Boolean);
+  // «Нина Т» -> «Нина Т.»: буква вместо фамилии, точку дописываем
+  let a=(p.length===2 && p[1].length===1 && p[1]===p[1].toUpperCase())
+    ? p[0]+' '+p[1]+'.' : p.join(' ');
+  let k=String(kinship||'').trim();
+  if(k) k=k[0].toLowerCase()+k.slice(1);
+  return [a,k].filter(Boolean).join(', ');
+}
+async function refreshTales(){
+  try{
+    const r=await fetch(`${FOTO_API}/stories/all`, {cache:'no-store'});
+    if(!r.ok) return;
+    let changed=false;
+    for(const it of await r.json()){
+      const t=String(it.target||'').trim();
+      if(!t.startsWith('ekat-')) continue;    // рассказы Голубевской и места исхода не наши
+      const name=SLUG2CLAN[t.slice(5)];
+      if(!name) continue;                     // род не опознан, сборка напишет об этом в лог
+      const arr=(CLAN_TALES[name]=CLAN_TALES[name]||[]);
+      if(arr.some(x=>String(x[2]||'')===it.id)) continue;
+      const ts=(it.approved||it.created||0)*1000;
+      const d=new Date(ts), pad=n=>String(n).padStart(2,'0');
+      const iso=ts?`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`:'';
+      const NL=String.fromCharCode(10), CR=String.fromCharCode(13);
+      let txt=String(it.story||'').trim().split(CR+NL).join(NL).split(CR).join(NL);
+      txt=txt.split(NL+NL).join('<br><br>').split(NL).join('<br>');
+      arr.push([txt, taleSign(it.author, it.kinship), it.id, iso, 0]);
+      changed=true;
+    }
+    if(!changed) return;
+    // Список слева пересобираем (счётчик и значок рассказов), подсветку он
+    // вернёт сам по selName, и заново рисуем открытую карточку - иначе
+    // рассказ доехал бы в данные, но на экране его не видно до перезагрузки.
+    renderList((document.getElementById('g-q')||{value:''}).value.trim().toLowerCase());
+    if(selName && typeof select==='function') select(selName);
+  }catch(e){}
+}
+
 // Ссылка на персону из текста цитаты (например, из рукописи): переключает
 // род и подсвечивает нужную строку в списке 1928 года.
 function goToPerson(ev,clan,id){
@@ -1435,6 +1483,23 @@ buildFilt();
 renderPlaces();
 route();
 renderList('');
+
+// Рассказы тянем и при обычной загрузке страницы, а не только по возврату на
+// вкладку: событий focus/visibilitychange при первой загрузке нет, а поток
+// /events присылает update лишь в момент одобрения. Ровно на этом в
+// Голубевской 02.09.2026 потерялись одобренные рассказы Афанасьевых.
+refreshTales();
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) refreshTales(); });
+window.addEventListener('focus',()=>refreshTales());
+// Живое соединение с сервисом: одобрили рассказ - страница узнаёт сразу, не
+// дожидаясь возврата на вкладку. Поток закрывается сам, браузер переподключает.
+(function(){
+  if(typeof EventSource==='undefined') return;
+  let es=null;
+  try{ es=new EventSource(`${FOTO_API}/events`); }catch(e){ return; }
+  es.addEventListener('update',()=>refreshTales());
+  es.onerror=()=>{};        // обрыв это норма, в бот не шлём
+})();
 
 function botHint(target){
   if(!SUB_BOT) return '';

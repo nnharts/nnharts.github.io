@@ -2107,6 +2107,10 @@ function _sameSet(a, b){
   for(const k of a) if(!b.has(k)) return false;
   return true;
 }
+// Вернуть подсветку открытого рода в списке слева после его пересборки.
+function markOpenClan(name){
+  document.querySelectorAll('.g-clans li').forEach(li=>li.classList.toggle('on',li.dataset.name===name));
+}
 async function refreshUserFotos(force){
   // Не чаще раза в полминуты: события видимости и фокуса приходят парами.
   const now = (typeof performance!=='undefined' ? performance.now() : 0);
@@ -2121,19 +2125,30 @@ async function refreshUserFotos(force){
     const changed = !_sameSet(rods, USER_FOTO_RODS) || !_sameSet(mestos, USER_FOTO_MESTA);
     USER_FOTO_RODS=rods; USER_FOTO_MESTA=mestos;
     if(!changed && _fotoTargetsAt) return;
+    // Какой род открыт - запоминаем ДО renderList. Он пересобирает список
+    // заново, класс `on` вместе с ним пропадает, и прочитанный ПОСЛЕ него
+    // селектор всегда давал null: лента открытого рода не обновлялась, а в
+    // списке слева гасла подсветка. Поймано 02.09.2026.
+    const openClan=(document.querySelector('.g-clans li.on')||{dataset:{}}).dataset.name||'';
     // перерисовываем список мест целиком, а не дописываем иконку в DOM:
     // при фильтрации через поиск дописанная вручную иконка терялась
     if(typeof renderPlaces==='function')
       renderPlaces((document.getElementById('g-pq')||{value:''}).value);
     if(rods.size) renderList((document.getElementById('g-q')||{value:''}).value.trim().toLowerCase());
+    if(openClan) markOpenClan(openClan);
     if(typeof paintStats2==='function') paintStats2();   // счётчик фото знает про читателей
     // и лента открытого рода: иначе значок в списке есть, а самой фотографии
     // в карточке нет, пока страницу не перезагрузят
-    const on=document.querySelector('.g-clans li.on');
-    if(on && on.dataset.name) loadUserFotosSafe('rod', on.dataset.name);
+    if(openClan) loadUserFotosSafe('rod', openClan);
   }catch(e){ reportJsError('иконки пользовательских фото', e); }
 }
 refreshUserFotos(true);
+// Рассказы тянем и при обычной загрузке страницы, а не только по возврату на
+// вкладку. Без этого вызова одобренный после сборки рассказ не появлялся у
+// того, кто просто открыл ссылку: событий focus/visibilitychange при первой
+// загрузке нет, а поток /events присылает update лишь в момент одобрения.
+// Поймано 02.09.2026 на рассказах Афанасьевых и Шадриных.
+refreshTales();
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ refreshUserFotos(); refreshTales(); } });
 window.addEventListener('focus', ()=>{ refreshUserFotos(); refreshTales(); });
 
@@ -2172,9 +2187,13 @@ async function refreshTales(){
       changed=true;
     }
     if(!changed) return;
+    // Открытый род - ДО renderList, он гасит класс `on` (тот же случай, что в
+    // refreshUserFotos). Пока это читалось после, одобренный рассказ приезжал
+    // в CLAN_TALES, но карточка его не показывала до перезагрузки страницы.
+    const openClan=(document.querySelector('.g-clans li.on')||{dataset:{}}).dataset.name||'';
     renderList((document.getElementById('g-q')||{value:''}).value.trim().toLowerCase());
-    const on=document.querySelector('.g-clans li.on');
-    if(on && on.dataset.name && typeof select==='function') select(on.dataset.name);
+    if(openClan) markOpenClan(openClan);
+    if(openClan && typeof select==='function') select(openClan);
   }catch(e){ reportJsError('рассказы потомков', e); }
 }
 
@@ -2515,8 +2534,8 @@ document.getElementById('g-sform').addEventListener('submit',async ev=>{
   }catch(e){msg.className='';msg.textContent='Сеть недоступна, попробуйте позже.';}
 });
 </script>
-<div class="g-fmodal" id="g-tmodal"><div class="box" style="max-width:620px">
-  <button class="close" onclick="document.getElementById('g-tmodal').classList.remove('on')">&#10005;</button>
+<div class="g-fmodal" id="g-tviewmodal"><div class="box" style="max-width:620px">
+  <button class="close" onclick="document.getElementById('g-tviewmodal').classList.remove('on')">&#10005;</button>
   <div class="g-clanmeta" id="g-tbox-rod" style="margin:0 0 4px"></div>
   <h3 id="g-tbox-title" style="margin:0 0 8px;display:none"></h3>
   <div class="g-tbox-q" id="g-tbox-q"></div>
@@ -2561,7 +2580,7 @@ function openTaleBox(clan, qid){
     +'<span>'+(узко?'Правка':'Предложить правку')+'</span>';
   document.getElementById('g-tbox-mail').innerHTML=ICON_MAIL
     +'<span>'+(узко?'Автору':'Написать автору')+'</span>';
-  document.getElementById('g-tmodal').classList.add('on');
+  document.getElementById('g-tviewmodal').classList.add('on');
   if(typeof ym==='function') ym(111205749,'reachGoal','otkrytie_vospominaniya');
 }
 document.getElementById('g-tbox-share').addEventListener('click',async function(){
@@ -2575,16 +2594,16 @@ document.getElementById('g-tbox-edit').addEventListener('click',function(){
   // Форме правки нужен текст, который человек видит: берём его из карточки в
   // ленте, там же, откуда его берёт карандаш рядом с цитатой.
   const btn=document.querySelector(`.g-tale button[onclick*="${taleBoxId}"]`);
-  document.getElementById('g-tmodal').classList.remove('on');
+  document.getElementById('g-tviewmodal').classList.remove('on');
   openEditForm(taleBoxClan, taleBoxId, btn);
 });
 document.getElementById('g-tbox-mail').addEventListener('click',function(){
   const btn=document.querySelector(`.g-tale button[onclick*="${taleBoxId}"]`);
-  document.getElementById('g-tmodal').classList.remove('on');
+  document.getElementById('g-tviewmodal').classList.remove('on');
   openLetterForm(taleBoxClan, taleBoxId, btn);
 });
-document.getElementById('g-tmodal').addEventListener('click',e=>{
-  if(e.target.id==='g-tmodal') e.target.classList.remove('on');
+document.getElementById('g-tviewmodal').addEventListener('click',e=>{
+  if(e.target.id==='g-tviewmodal') e.target.classList.remove('on');
 });
 // Ссылка вида #rod:слаг:tale:id открывает род и сразу это воспоминание.
 // Карточка-превью кладёт id в ?tale=, маршрутизатор ждёт появления функции:
