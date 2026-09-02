@@ -7,7 +7,7 @@
              'сентября','октября','ноября','декабря'];
   var el = document.getElementById('g-visits');
   if (!el) return;
-  fetch('/api/stats').then(function (r) { return r.ok ? r.json() : null }).then(function (d) {
+  fetch('https://fundus.hartschenberg.de/api/stats').then(function (r) { return r.ok ? r.json() : null }).then(function (d) {
     if (!d || !d.total) return;
     var day = '';
     if (d.since) {

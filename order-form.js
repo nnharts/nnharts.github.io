@@ -9,7 +9,7 @@
    справочнике родов (/golubevskaya/foto-api/contact-author), поэтому письма
    приходят в одном формате и ничего нового на сервере поднимать не нужно. */
 (function () {
-  var API = '/golubevskaya/foto-api';
+  var API = 'https://fundus.hartschenberg.de/golubevskaya/foto-api';
   var btns = document.querySelectorAll('.order-form-btn');
 
   var CSS = `

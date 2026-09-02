@@ -1894,7 +1894,7 @@ const LAND_PHOTOS = [["../../lichtbilder/1868-osnovateli-stanicy/photo_t.jpg", "
     // Адрес строкой, не через FOTO_API: та константа объявлена НИЖЕ по
     // странице, и обращение к ней отсюда падает временной мёртвой зоной.
     // Те же грабли, что с CLAN_PHOTOS (verstka.md, пункт 9).
-    fetch('/golubevskaya/foto-api/lichtbilder/tags').then(r => r.ok ? r.json() : {})
+    fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/lichtbilder/tags').then(r => r.ok ? r.json() : {})
   ]).then(([items, tags]) => {
     const want = (items || []).filter(it => (tags[it.slug] || []).includes('#семиречье'));
     if(!want.length) return;
@@ -2805,7 +2805,7 @@ document.getElementById('g-eform').addEventListener('submit',async ev=>{
   const msg=document.getElementById('g-emsg');
   msg.textContent='Отправка...';
   try{
-    const r=await fetch('/golubevskaya/foto-api/edit-request',{method:'POST',body:fd});
+    const r=await fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/edit-request',{method:'POST',body:fd});
     if(r.ok){ ev.target.reset(); msg.className='ok';
       msg.innerHTML='Спасибо, получили. Изменим в течение рабочего дня.'+botHint(editTarget); }
     else { msg.className=''; msg.textContent=await errText(r,'отправить'); }
@@ -2871,7 +2871,7 @@ document.getElementById('g-lform').addEventListener('submit',async ev=>{
   const msg=document.getElementById('g-lmsg');
   msg.textContent='Отправка...';
   try{
-    const r=await fetch('/golubevskaya/foto-api/letter',{method:'POST',body:fd});
+    const r=await fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/letter',{method:'POST',body:fd});
     if(r.ok){ ev.target.reset(); msg.className='ok';
       msg.innerHTML='Спасибо, письмо получили и передадим автору.'+botHint(letterTarget); }
     else { msg.className=''; msg.textContent=await errText(r,'отправить'); }
@@ -2898,7 +2898,7 @@ document.getElementById('g-lform').addEventListener('submit',async ev=>{
 </div></div>
 <script>
 let subTarget='', SUB_BOT='';
-(async()=>{ try{ const r=await fetch('/golubevskaya/foto-api/subscribe/info');
+(async()=>{ try{ const r=await fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/subscribe/info');
   if(r.ok){ const j=await r.json(); SUB_BOT=j.bot||''; } }catch(e){} })();
 function openSubForm(target){
   subTarget=target;
@@ -2940,7 +2940,7 @@ document.getElementById('g-subform').addEventListener('submit',async ev=>{
   const msg=document.getElementById('g-submsg');
   msg.textContent='Отправка...';
   try{
-    const r=await fetch('/golubevskaya/foto-api/subscribe',{method:'POST',body:fd});
+    const r=await fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/subscribe',{method:'POST',body:fd});
     if(r.ok){ ev.target.reset(); msg.className='ok'; msg.textContent='Готово, подписали.';
       if(typeof ym==='function') ym(111205749,'reachGoal','podpiska_pochta'); }
     else { msg.className=''; msg.textContent=await errText(r,'подписать'); }
@@ -3028,7 +3028,7 @@ document.getElementById('g-tform').addEventListener('submit',async ev=>{
   const msg=document.getElementById('g-tmsg');
   msg.textContent='Отправка...';
   try{
-    const r=await fetch('/golubevskaya/foto-api/story',{method:'POST',body:fd});
+    const r=await fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/story',{method:'POST',body:fd});
     if(r.ok){ ev.target.reset(); msg.className='ok';
       msg.innerHTML='Спасибо! Мы прочитаем и опубликуем.'+botHint(taleTarget); }
     else { msg.className=''; msg.textContent=await errText(r,'отправить'); }
@@ -3043,7 +3043,7 @@ document.getElementById('g-tform').addEventListener('submit',async ev=>{
 // счётчик просто не появляется.
 (async()=>{
   let counts={};
-  try{ const r=await fetch('/golubevskaya/foto-api/subscribe/counts');
+  try{ const r=await fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/subscribe/counts');
        if(r.ok) counts=await r.json(); }catch(e){}
   // «подписчиков», а не «потомков»: подписаться может и однофамилец, и просто
   // читатель. Просьба Никиты 23.08.2026.
