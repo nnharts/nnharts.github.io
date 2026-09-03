@@ -620,6 +620,14 @@ const ICON_PENCIL=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" s
 const ICON_TG=`<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-3px"><path d="M21.6 4.2 3.3 11.3c-1 .4-1 1.8.1 2.1l4.6 1.4 1.7 5.4c.3.9 1.4 1.1 2 .4l2.5-2.6 4.6 3.4c.7.5 1.7.1 1.9-.8l3-14.4c.2-1-.8-1.8-1.7-1.4zM9.6 14.3l8.2-5.1-6.7 6.2-.3 3z"/></svg>`;
 const ICON_LINK=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.1"/></svg>`;
 const ICON_CHECK=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M20 6 9 17l-5-5"/></svg>`;
+// Значок документа в двух состояниях, как в справочнике Голубевской. Сырой
+// ICON_SCROLL приглушён (opacity .55): такой он в меню, где иконка украшение.
+// Здесь значок это ссылка, поэтому приглушать нельзя, и цвет несёт смысл:
+// терракотовый - лист открывается по клику, серый - скана нет, его надо
+// запросить. Поймано Никитой 02.09.2026 на роде Плугатыр: кликабельные значки
+// стояли приглушёнными и выглядели неактивными.
+const ICON_SCROLL_ACC=ICON_SCROLL.replace('opacity:.55','opacity:1;color:var(--accent)');
+const ICON_SCROLL_BW=ICON_SCROLL.replace('opacity:.55','opacity:1;color:#8a8474');
 const HEAVY_URL='ekat-data.json?v=ea6dec3d';
 const byName={};DATA.forEach(c=>byName[c.name]=c);
 // Подробности родов (дворы 1811, список 1928, родня, переписи) лежат не в
@@ -1053,7 +1061,7 @@ function hypoNote(clan, src, list, n){
   if(!h) return '';
   return `<div class="e-hypo"><span class="e-hypo-tag">#гипотеза</span> ${esc(h.text)}`
     +(h.link?` <a class="e-source-link" href="${esc(h.link)}" title="${esc(h.link_title||'Открыть документ')}">`
-      +`${ICON_SCROLL}<span>${esc(h.link_title||'документ')}</span></a>`:'')+`</div>`;
+      +`${ICON_SCROLL_ACC}<span>${esc(h.link_title||'документ')}</span></a>`:'')+`</div>`;
 }
 function leafUrl1928(sheet){
   const k=String(sheet||'').replace(/\s+/g,'').replace(/\.$/,'');
@@ -1095,11 +1103,11 @@ function srcLine(srcs,compact=false){
     let mark='';
     if(!doc) mark=ICON_TREE+' ';
     else if(url) mark=`<a class="e-source-link" href="${esc(url)}" target="_blank" rel="noopener"`
-      +` title="Открыть ${esc(sheet?sheet[2]:t)}">${ICON_SCROLL}</a> `;
+      +` title="Открыть ${esc(sheet?sheet[2]:t)}">${ICON_SCROLL_ACC}</a> `;
     else mark=`<span class="e-source-ref e-source-ask" title="Запросить скан листа"`
       +` data-src="${esc(t)}" data-note="${esc(note)}"`
       +` onclick="event.stopPropagation();openScanRequest(this.dataset.src,this.dataset.note)"`
-      +`>${ICON_SCROLL}</span> `;
+      +`>${ICON_SCROLL_BW}</span> `;
     let tail='';
     if(sheet){
       const before=sheet[1].replace(/,\s*$/,'');
