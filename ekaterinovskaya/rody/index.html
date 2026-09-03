@@ -622,6 +622,24 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
     <button class="send" type="submit">Отправить запрос</button>
     <div id="g-lb-cmsg"></div>
   </form>
+  <!-- Карандаш: посетитель предлагает поправить подпись снимка. Значок тот же,
+       что у правки воспоминаний (.g-tedit + ICON_PENCIL), сам значок ставится в
+       JS: в статичной разметке константы иконок недоступны. Просьба Никиты
+       03.09.2026. Заявка уходит в /foto-edit-request, принятие в телеграме
+       кладёт текст в agent_meta, откуда описание берёт сборка страницы. -->
+  <div id="g-lb-editrow" style="margin:2px 0 10px">
+    <button class="g-tedit" type="button" id="g-lb-editbtn"
+      title="Предложить правку подписи"></button>
+    <span class="g-clanmeta" style="margin:0">предложить правку подписи</span>
+  </div>
+  <form id="g-lb-eform" style="display:none">
+    <label>Как должна выглядеть подпись *</label>
+    <textarea name="newtext" required maxlength="2000" rows="4"></textarea>
+    <label>Как с вами связаться *</label>
+    <input name="contact" required maxlength="200" placeholder="e-mail или @nickname">
+    <button class="send" type="submit">Отправить предложение</button>
+    <div id="g-lb-emsg"></div>
+  </form>
 </div></div>
 
 <div class="g-fmodal" id="g-fmodal"><div class="box">
@@ -830,6 +848,27 @@ function nowStamp(){
 }
 
 let lbPhotoRef='';
+// Путь снимка ровно в том виде, которым ключуется agent_meta на службе
+// (`foto/<род>/<файл>.jpg`): по нему принятая правка подписи и подставляется
+// при сборке. Человекочитаемый lbPhotoRef для этого не годится, он для письма.
+let lbPhotoPath='';
+function lbEditOpen(){
+  document.getElementById('g-lb-eform').style.display='block';
+  document.getElementById('g-lb-editrow').style.display='none';
+}
+function lbEditReset(descr){
+  const row=document.getElementById('g-lb-editrow');
+  const form=document.getElementById('g-lb-eform');
+  const btn=document.getElementById('g-lb-editbtn');
+  if(!row||!form) return;
+  if(btn && !btn.innerHTML) btn.innerHTML=ICON_PENCIL;
+  if(btn && !btn.onclick) btn.onclick=lbEditOpen;
+  row.style.display=''; form.style.display='none'; form.reset();
+  const ta=form.querySelector('textarea[name=newtext]');
+  if(ta) ta.value=descr||'';
+  const msg=document.getElementById('g-lb-emsg');
+  if(msg){ msg.textContent=''; msg.className=''; }
+}
 document.addEventListener('click',e=>{
   const a=e.target.closest('.g-foto a');
   if(!a) return;
@@ -858,6 +897,7 @@ document.addEventListener('click',e=>{
   // всегда, лайтбокс показывал именно её (сжатую), а не полноразмерный
   // оригинал по href. Поймано 06.08.2026: «качество хуже оригинала».
   lbImg.src=a.href||img?.src||'';
+  lbPhotoPath=(a.getAttribute('href')||'').replace(/^\.\//,'');
   document.getElementById('g-lb-link').href=a.href;
   document.getElementById('g-lb-title').textContent=title||'Фотография';
   document.getElementById('g-lb-year').textContent=year?('Год фото: '+year):'';
@@ -875,7 +915,26 @@ document.addEventListener('click',e=>{
   document.getElementById('g-lb-cform').style.display='none';
   document.getElementById('g-lb-contactbtn').style.display='';
   document.getElementById('g-lb-cmsg').textContent='';
+  // Карандаш и форма правки подписи: сбрасываем на каждый показ, иначе в окне
+  // остаётся текст от предыдущего снимка, и человек правит не то фото.
+  lbEditReset(descr);
   document.getElementById('g-lb').classList.add('on');
+});
+document.getElementById('g-lb-eform').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const fd=new FormData(ev.target);
+  fd.append('path',lbPhotoPath);
+  fd.append('current',document.getElementById('g-lb-descr').textContent.trim());
+  const m=lbPhotoPath.match(/^foto\/([^/]+)\//);
+  if(m) fd.append('target',m[1]);
+  const msg=document.getElementById('g-lb-emsg');
+  msg.textContent='Отправка...';
+  try{
+    const r=await fetch(FOTO_API+'/foto-edit-request',{method:'POST',body:fd});
+    if(r.ok){ ev.target.reset(); msg.className='ok';
+      msg.textContent='Спасибо, получили. Посмотрим и поправим.'; }
+    else { msg.className=''; msg.textContent=(await r.json().catch(()=>({}))).error||'Не вышло, попробуйте ещё раз.'; }
+  }catch(e){ msg.className=''; msg.textContent='Сеть недоступна, попробуйте позже.'; }
 });
 document.getElementById('g-lb-cform').addEventListener('submit',async ev=>{
   ev.preventDefault();
