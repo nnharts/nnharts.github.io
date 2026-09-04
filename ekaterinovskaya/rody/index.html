@@ -862,6 +862,12 @@ let lbPhotoPath='';
 // прежней записи админки, а её у большинства снимков нет, и без этих двух
 // полей название подписи при принятии молча пропадало. Никита 04.09.2026.
 let lbPhotoTitle='', lbPhotoYear='';
+// Ключ рода для заявки. Раньше выводился из пути снимка, и это врало дважды: у
+// снимка от посетителя путь без папки рода, а у Екатериновской папка названа
+// по-русски, тогда как служба ждёт ключ с приставкой `ekat-` (по ней админка
+// выбирает станицу для эскиза). Теперь ключ приезжает на самой ссылке снимка,
+// а путь остаётся страховкой. Никита 04.09.2026.
+let lbPhotoTarget='';
 function lbEditOpen(){
   document.getElementById('g-lb-eform').style.display='block';
   document.getElementById('g-lb-editrow').style.display='none';
@@ -919,6 +925,7 @@ document.addEventListener('click',e=>{
   // оригинал по href. Поймано 06.08.2026: «качество хуже оригинала».
   lbImg.src=a.href||img?.src||'';
   lbPhotoPath=(a.getAttribute('href')||'').replace(/^\.\//,'');
+  lbPhotoTarget=a.dataset.target||(lbPhotoPath.match(/^foto\/([^/]+)\//)||['',''])[1];
   document.getElementById('g-lb-link').href=a.href;
   document.getElementById('g-lb-title').textContent=title||'Фотография';
   document.getElementById('g-lb-year').textContent=year?('Год фото: '+year):'';
@@ -949,8 +956,7 @@ document.getElementById('g-lb-eform').addEventListener('submit',async ev=>{
   fd.append('current',document.getElementById('g-lb-descr').textContent.trim());
   fd.append('title',lbPhotoTitle);
   fd.append('year',lbPhotoYear);
-  const m=lbPhotoPath.match(/^foto\/([^/]+)\//);
-  if(m) fd.append('target',m[1]);
+  if(lbPhotoTarget) fd.append('target',lbPhotoTarget);
   const msg=document.getElementById('g-lb-emsg');
   msg.textContent='Отправка...';
   try{
@@ -1475,6 +1481,7 @@ async function loadUserFotos(kind,target){
       a.dataset.cap=`${f.title}${f.year?` (${f.year})`:''}${f.descr?`. ${f.descr}`:''}`;
       a.dataset.author=f.author||'';
       a.dataset.authorUrl=f.author_url||'';
+      a.dataset.target='ekat-'+slug(target);
       a.innerHTML=`<img src="${f.url}" loading="lazy" alt="" title="${cap.replace(/"/g,'&quot;')}">`;
       line.insertBefore(a,line.firstChild);
     });
@@ -1627,7 +1634,7 @@ function select(name){
 
   const ph=CLAN_PHOTOS[name]||[];
   const fotoHtml=`<div class="g-foto" id="g-fotoline">`+ph.slice().reverse().map(p=>
-    `<a href="${p[1]}" target="_blank" rel="noopener" data-cap="${(p[2]||'').replace(/"/g,'&quot;')}"${p[3]?` data-author="${p[3].replace(/"/g,'&quot;')}"`:''}><img src="${p[0]}" loading="lazy" onerror="this.closest('a').remove()" alt="${mdStrip(p[2]).replace(/"/g,'&quot;')}" title="${mdStrip(p[2]).replace(/"/g,'&quot;')}"></a>`).join('')
+    `<a href="${p[1]}" target="_blank" rel="noopener" data-cap="${(p[2]||'').replace(/"/g,'&quot;')}" data-target="ekat-${slug(name)}"${p[3]?` data-author="${p[3].replace(/"/g,'&quot;')}"`:''}><img src="${p[0]}" loading="lazy" onerror="this.closest('a').remove()" alt="${mdStrip(p[2]).replace(/"/g,'&quot;')}" title="${mdStrip(p[2]).replace(/"/g,'&quot;')}"></a>`).join('')
     +`<span class="g-fotoacts">`
     +`<button class="g-addfoto" title="Добавить своё фото" onclick="openFotoForm('rod','${name.replace(/'/g,"\'")}')"><span class="pl">+</span><span class="cap">у меня есть фото</span></button>`
     +(tales.length?'':`<button class="g-addfoto" title="Рассказать о роде" onclick="openTaleForm('${name.replace(/'/g,"\'")}')"><span class="pl">+</span><span class="cap">рассказать о роде</span></button>`)
