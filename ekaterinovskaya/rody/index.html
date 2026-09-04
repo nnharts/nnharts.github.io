@@ -633,7 +633,13 @@ img.expert-seal{border-radius:50%;object-fit:cover;display:block;flex:0 0 auto}
     <span class="g-clanmeta" style="margin:0">предложить правку подписи</span>
   </div>
   <form id="g-lb-eform" style="display:none">
-    <label>Как должна выглядеть подпись *</label>
+    <!-- Строка «сохранится название и год»: заявка меняет ОПИСАНИЕ, а название
+         и год снимка принятие сохраняет. Без этой строки человек пишет подпись
+         целиком, и на странице она склеивается с названием, то есть название
+         задваивается: «Ступкины (≈1910). Ступкины (≈1910)...». Никита
+         04.09.2026. -->
+    <div class="g-clanmeta" id="g-lb-ekeep" style="margin:0 0 7px"></div>
+    <label>Описание снимка: кто на нём, где, что происходит *</label>
     <textarea name="newtext" required maxlength="2000" rows="4"></textarea>
     <label>Как с вами связаться *</label>
     <input name="contact" required maxlength="200" placeholder="e-mail или @nickname">
@@ -852,11 +858,15 @@ let lbPhotoRef='';
 // (`foto/<род>/<файл>.jpg`): по нему принятая правка подписи и подставляется
 // при сборке. Человекочитаемый lbPhotoRef для этого не годится, он для письма.
 let lbPhotoPath='';
+// Название и год снимка досылаем вместе с заявкой. Принятие берёт их из
+// прежней записи админки, а её у большинства снимков нет, и без этих двух
+// полей название подписи при принятии молча пропадало. Никита 04.09.2026.
+let lbPhotoTitle='', lbPhotoYear='';
 function lbEditOpen(){
   document.getElementById('g-lb-eform').style.display='block';
   document.getElementById('g-lb-editrow').style.display='none';
 }
-function lbEditReset(descr){
+function lbEditReset(descr,title,year){
   const row=document.getElementById('g-lb-editrow');
   const form=document.getElementById('g-lb-eform');
   const btn=document.getElementById('g-lb-editbtn');
@@ -868,6 +878,17 @@ function lbEditReset(descr){
   if(ta) ta.value=descr||'';
   const msg=document.getElementById('g-lb-emsg');
   if(msg){ msg.textContent=''; msg.className=''; }
+  lbPhotoTitle=title||''; lbPhotoYear=year||'';
+  const keep=document.getElementById('g-lb-ekeep');
+  if(keep){
+    const bits=[];
+    if(lbPhotoTitle) bits.push('название «'+lbPhotoTitle+'»');
+    if(lbPhotoYear) bits.push('год '+lbPhotoYear);
+    keep.textContent=bits.length
+      ? ('Сохранится как есть: '+bits.join(', ')+'. Ниже правится только описание.')
+      : '';
+    keep.style.display=bits.length?'':'none';
+  }
 }
 document.addEventListener('click',e=>{
   const a=e.target.closest('.g-foto a');
@@ -918,7 +939,7 @@ document.addEventListener('click',e=>{
   document.getElementById('g-lb-cmsg').textContent='';
   // Карандаш и форма правки подписи: сбрасываем на каждый показ, иначе в окне
   // остаётся текст от предыдущего снимка, и человек правит не то фото.
-  lbEditReset(descr);
+  lbEditReset(descr,title,year);
   document.getElementById('g-lb').classList.add('on');
 });
 document.getElementById('g-lb-eform').addEventListener('submit',async ev=>{
@@ -926,6 +947,8 @@ document.getElementById('g-lb-eform').addEventListener('submit',async ev=>{
   const fd=new FormData(ev.target);
   fd.append('path',lbPhotoPath);
   fd.append('current',document.getElementById('g-lb-descr').textContent.trim());
+  fd.append('title',lbPhotoTitle);
+  fd.append('year',lbPhotoYear);
   const m=lbPhotoPath.match(/^foto\/([^/]+)\//);
   if(m) fd.append('target',m[1]);
   const msg=document.getElementById('g-lb-emsg');
