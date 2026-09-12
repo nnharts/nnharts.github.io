@@ -21,6 +21,19 @@
 <meta property="og:locale" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 <!-- /og:auto -->
+<style>
+.scan-order-icon{display:inline-flex;align-items:center;justify-content:center;padding:2px;margin:0 3px 0 2px;border:0;background:transparent;color:#8a8474;cursor:pointer;vertical-align:-3px}
+.scan-order-icon:hover,.scan-order-icon:focus-visible{color:var(--ink)}
+.scan-order-icon svg{display:block}
+.scan-order-modal{position:fixed;inset:0;background:rgba(30,25,18,.55);display:none;z-index:60;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 12px}
+.scan-order-modal.on{display:flex}
+.scan-order-modal .box{background:var(--card);border:1px solid var(--rule);border-top:3px solid var(--accent);max-width:460px;width:100%;padding:20px 24px;border-radius:3px}
+.scan-order-modal label{display:block;margin:10px 0 3px;font-size:.88em}
+.scan-order-modal input{width:100%;padding:7px 9px;border:1px solid var(--rule);background:var(--paper-2);color:var(--ink);font:inherit;border-radius:2px;box-sizing:border-box}
+.scan-order-modal .send{margin-top:14px;padding:9px 18px;border:1px solid var(--accent);background:var(--accent);color:#fff;font:inherit;cursor:pointer;border-radius:2px}
+.scan-order-modal .close{float:right;border:0;background:none;font-size:20px;cursor:pointer;color:var(--ink-dim)}
+.scan-order-modal .ok{color:var(--accent);font-weight:700;margin-top:12px}
+</style>
 </head>
 <body>
 
@@ -61,7 +74,7 @@
     <h1>Село Кроты</h1>
     <p class="dek">Список архивных дел по селу Кроты (Пирятинский уезд): ревизия по Лубенскому полку 1747 года, исповедные ведомости Пирятинского духовного правления второй половины XVIII века и 1843 года, метрические списки первых советских лет, устав религиозной общины 1924 года и письма остарбайтеров, отправленные в село из Германии. Шифры ЦГИАК (Киев), ГАПО (Полтава) и ЦДАВО (Киев).</p>
     <div class="meta-row">
-      <span>Дел в реестре: <b>11</b></span>
+      <span>Дел в реестре: <b>12</b></span>
       <span>Готовых материалов: <b>1</b></span>
       <span>Охват: <b>1747&ndash;1945</b></span>
     </div>
@@ -160,7 +173,7 @@
         <div class="body-col">
           <span class="code">ГАПО ф.801 оп.1 д.1043</span>
           <p class="title">Исповедная роспись села Кроты</p>
-          <p class="note">На л. 25 об. упоминается Евтихий Троян. В Dropbox хранится 179 снимков дела.</p>
+          <p class="note">На л. 25 об. упоминается <button class="scan-order-icon" type="button" title="Запросить фото документа" aria-label="Запросить фото документа с упоминанием Евтихия Трояна" onclick="openScanRequest()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 3h14v18H5z"/><path d="M8 7h8M8 10.5h8"/><circle cx="15.5" cy="16.5" r="3.2"/><path d="M13.9 16.5l1.2 1.2 2-2"/></svg></button>Евтихий Троян. В Dropbox хранится 179 снимков дела.</p>
         </div>
         <a class="order-btn" href="https://market.familio.org/expert/nikita-neytan-kharchenberg/" target="_blank" rel="noopener noreferrer">Запросить копию</a>
       </li>
@@ -223,6 +236,24 @@
   </footer>
 
 </div>
+
+<div class="scan-order-modal" id="scan-order-modal" role="dialog" aria-modal="true" aria-labelledby="scan-order-title">
+  <div class="box">
+    <button class="close" type="button" onclick="closeScanRequest()" aria-label="Закрыть">&#10005;</button>
+    <h3 id="scan-order-title" style="margin:0 0 4px">Упоминание Евтихия Трояна</h3>
+    <div style="color:var(--ink-dim);font-size:.9em;margin:0 0 10px">Исповедная роспись села Кроты, 1790 год. ГАПО, ф. 801, оп. 1, д. 1043, л. 25 об.</div>
+    <p style="font-size:.9em;margin:0 0 4px">Лист найден, цифровая копия имеется. Оставьте свои контакты, и генеалог свяжется с вами по поводу заказа снимка высокого разрешения.</p>
+    <form id="scan-order-form">
+      <label>Ваше имя *</label><input name="name" required maxlength="100">
+      <label>Ваш e-mail *</label><input name="email" type="email" required maxlength="200">
+      <label>WhatsApp или ник в Telegram</label><input name="messenger" maxlength="200" placeholder="+49... или @nickname">
+      <button class="send" type="submit">Отправить запрос</button>
+      <div id="scan-order-message"></div>
+    </form>
+    <div style="color:var(--ink-dim);font-size:.9em;margin-top:12px">Или закажите через <a href="https://market.familio.org/expert/nikita-neytan-kharchenberg/" target="_blank" rel="noopener noreferrer">профиль эксперта на Familio</a>.</div>
+  </div>
+</div>
+
 <footer class="g-footer">
   <div class="g-copy">
     <img src="/favicon-32x32.png" width="18" height="18" alt="Герб Харченберг">
@@ -234,5 +265,30 @@
   </div>
 </footer>
 <script src="/footer.js" defer></script>
+<script>
+const scanOrderModal=document.getElementById('scan-order-modal');
+function openScanRequest(){
+  document.getElementById('scan-order-message').textContent='';
+  if(typeof ym==='function') ym(111205749,'reachGoal','zapros_skana');
+  scanOrderModal.classList.add('on');
+}
+function closeScanRequest(){scanOrderModal.classList.remove('on')}
+scanOrderModal.addEventListener('click',event=>{if(event.target===scanOrderModal)closeScanRequest()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeScanRequest()});
+document.getElementById('scan-order-form').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const data=new FormData(event.target);
+  data.append('photo','ЗАПРОС СКАНА (Кроты): Евтихий Троян, 1790 год, ГАПО ф.801 оп.1 д.1043, л.25 об.');
+  const message=document.getElementById('scan-order-message');
+  message.className='';
+  message.textContent='Отправка...';
+  try{
+    const response=await fetch('https://fundus.hartschenberg.de/golubevskaya/foto-api/contact-author',{method:'POST',body:data});
+    const result=await response.json();
+    if(result.ok){message.className='ok';message.textContent='Запрос отправлен! Подтверждение выслано на ваш e-mail, генеалог свяжется с вами.';event.target.reset()}
+    else message.textContent=result.error||'Ошибка, попробуйте еще раз.';
+  }catch(error){message.textContent='Сеть недоступна, попробуйте позже.'}
+});
+</script>
 </body>
 </html>
