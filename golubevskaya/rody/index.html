@@ -3322,5 +3322,54 @@ document.addEventListener('click', function (e) {
   if (a && typeof ym === 'function') { ym(111205749, 'reachGoal', 'zapros_metrik'); }
 }, true);
 </script>
+<script>
+/* Правки описаний из админки подмешиваются НА ЛЕТУ, как фотографии от
+   посетителей. До 14.09.2026 их доставляла только полная пересборка, и
+   «принято» в боте означало «через полтора часа сборки, когда дойдут руки»:
+   две правки Юрия Богаченко по Димитриевым провисели так десять дней. Вопрос
+   Никиты: «почему не деплоятся сразу, ровно как фотографии». Сборка по-прежнему
+   печёт правки в файл, этот блок только закрывает разрыв между одобрением и
+   ближайшей сборкой. Блок самодостаточный: свои имена, ничего наружу. */
+(function(){
+  var API='https://fundus.hartschenberg.de/golubevskaya/foto-api/agent-meta', cache=null, timer=null;
+  function meta(){
+    if(!cache) cache=fetch(API).then(function(r){return r.ok?r.json():{};}).catch(function(){return {};});
+    return cache;
+  }
+  function caption(m){
+    var t=(m.title||'').trim(), y=(m.year||'').trim(), d=(m.descr||'').trim();
+    var ym=y.match(/1[89]\d\d/);
+    var dup=ym ? (t+' '+d).indexOf(ym[0])>=0 : false;
+    var cap=t+((y&&!dup)?(' ('+y+')'):'')+(d?('. '+d):'');
+    cap=cap.replace(/^[\s.]+/,'').replace(/[\s.]+$/,'');
+    return cap?cap+'.':'';
+  }
+  function apply(){
+    meta().then(function(m){
+      var links=document.querySelectorAll('.g-foto a');
+      for(var i=0;i<links.length;i++){
+        var a=links[i];
+        var p=(a.getAttribute('href')||'').replace(/^\.\//,'');
+        var row=m[p];
+        if(!row) continue;
+        var cap=caption(row);
+        if(!cap||a.getAttribute('data-cap')===cap) continue;
+        a.setAttribute('data-cap',cap);
+        var img=a.querySelector('img');
+        if(img){ img.title=cap; img.alt=cap; }
+      }
+    });
+  }
+  function later(){ clearTimeout(timer); timer=setTimeout(apply,250); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',later);
+  else later();
+  window.addEventListener('hashchange',later);
+  /* Лента снимков перерисовывается при выборе рода, поэтому следим за деревом,
+     а не опрашиваем по таймеру. */
+  if(window.MutationObserver){
+    new MutationObserver(later).observe(document.documentElement,{childList:true,subtree:true});
+  }
+})();
+</script>
 </body>
 </html>
