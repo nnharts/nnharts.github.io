@@ -1983,7 +1983,11 @@ document.getElementById('g-lform').addEventListener('submit',async ev=>{
     var t=(m.title||'').trim(), y=(m.year||'').trim(), d=(m.descr||'').trim();
     var ym=y.match(/1[89]\d\d/);
     var dup=ym ? (t+' '+d).indexOf(ym[0])>=0 : false;
-    var cap=t+((y&&!dup)?(' ('+y+')'):'')+(d?('. '+d):'');
+    var showY=(y&&!dup);
+    /* Пустое название = подписью стал принятый текст посетителя целиком,
+       тогда год уходит в конец. Правило Никиты 14.09.2026. */
+    var cap = t ? (t+(showY?(' ('+y+')'):'')+(d?((/[.]\s*$/.test(t)?'':'.')+' '+d):''))
+                : (d+(showY?(' ('+y+')'):''));
     cap=cap.replace(/^[\s.]+/,'').replace(/[\s.]+$/,'');
     return cap?cap+'.':'';
   }
