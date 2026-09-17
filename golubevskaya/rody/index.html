@@ -937,6 +937,34 @@ function openExtMarriage(key){
   if(typeof ym==='function') ym(111205749,'reachGoal','otkrytie_metriki');
   window.open(SCAN_BASE+x.u,'_blank','noopener');
 }
+// Метрические записи наших семей ИЗ ЧУЖИХ ПРИХОДОВ, сделанные ДО переселения в
+// Борохудзир. Того же рода случай, что EXT_MARRIAGE: своего line у такой записи
+// нет и быть не может, в выписке по Голубевской её не существует, поэтому ключ -
+// key семьи из tree_data.json. Показываем отдельной строкой события, как брак, с
+// той же терракотовой иконкой листа: правила вёрстки для документов едины.
+// Прислал Юрий Богаченко 15.09.2026, метрическая книга Богородской волости
+// Томского уезда, плёнка FamilySearch 007470281.
+const EXT_BIRTH = {
+ 'михаил|иван|овчинников': {u:'metriki/1862_fs007470281_00169_ovchinnikov.jpg',
+   year:1862, who:'дочь Мария', when:'род. 1 апреля, крещена 2 апреля',
+   place:'деревня Муры, Богородская волость Томского уезда', rec:'запись №7'},
+ 'семен|кузьма|барышихин': {u:'metriki/1861_fs007470281_00145_baryshihin.jpg',
+   year:1861, who:'сын Иоанн', when:'род. 2-го, крещён 3-го',
+   place:'Богородская волость Томского уезда', rec:'запись №21'},
+};
+function extBirthLine(key){
+  const x=EXT_BIRTH[key]; if(!x) return '';
+  const mark=`<span class="g-scanmark" title="Открыть лист метрической книги" `
+    +`onclick="event.stopPropagation();openExtBirth('${key}')">${ICON_SCROLL_ACC}</span> `;
+  return `<div class="g-mar"><b>род. ${x.year}</b> ${mark}${x.who}`
+    +`${x.when?`, ${x.when}`:''}${x.place?` · ${x.place}`:''}`
+    +`${x.rec?`, ${x.rec}`:''}</div>`;
+}
+function openExtBirth(key){
+  const x=EXT_BIRTH[key]; if(!x) return;
+  if(typeof ym==='function') ym(111205749,'reachGoal','otkrytie_metriki');
+  window.open(SCAN_BASE+x.u,'_blank','noopener');
+}
 // сканы записей: line -> {u: файл, paid: платный (превью), t: заголовок, d: реквизиты}
 const SCAN_BY_LINE = {
  1917041:{u:'metriki/1917_f597-o1dop-d21_75ob-76_152059.jpg',t:'Рождение Михаила Демченко',d:'род. 08.11.1917, крещён 19.11 · Ф.597 О.1доп Д.21, л.75об-76, запись №28. «Копальскаго уѣзда, села Лугового крестьянинъ Григорій Прокопьевъ Демченко и законная жена его Ѳеодосія Андреева, оба православнаго вероисповеданія». Восприемники: крестьянин того же села Емилиан Прокопьев Демченко и дочь сотника Сибирского казачьего войска девица Харитина Меркуриева Забарева. Имя дано «въ честь Архистратига Михаила, празднуем. церков. 8 ноября». В индексации имя прочитано «Михал», по скану ясно «Михаилъ»',w:'Михаила, сына Григория Прокопьева Демченко',n:'Григорий Прокопьев Демченко'},
@@ -1305,7 +1333,7 @@ function famCard(f, depth, amb){
     if(m.role==='дочь') return `<div class="g-mar"><b>⚭ ${m.year??'?'}</b> ${scanMark(m.line)} дочь ${m.bride||'?'} выдана за ${m.groom||'?'}${m.groom_age?` (${m.groom_age} л.)`:''}</div>`;
     return `<div class="g-mar"><b>⚭ ${m.year??'?'}</b> ${scanMark(m.line)} сын ${m.groom||'?'} женился${m.bride?` на ${m.bride}`:''}${m.bride_father?` (дочь ${m.bride_father})`:''}</div>`;
   }).join('');
-  const extMar = extMarriageLine(f.key);
+  const extMar = extMarriageLine(f.key) + extBirthLine(f.key);
   // Смерть самого главы двора. До 21.08.2026 карточка показывала смерть жены и
   // зачёркивала умерших детей, а собственная смерть главы не показывалась вовсе:
   // в famCard для неё просто не было ветки. Записи с пустым rel это и есть
