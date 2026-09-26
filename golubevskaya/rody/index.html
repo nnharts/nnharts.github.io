@@ -716,7 +716,7 @@ const FAMILIO_ICON='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAA
 // несколько секунд смотрел в пустой экран, не дождавшись списка родов, и уходил
 // (замечено Никитой по Метрике 18.08.2026). Список рода нужен сразу, а
 // подробности только для того рода, который открыли.
-const HEAVY_URL = 'rody-data.json?v=3748846d';
+const HEAVY_URL = 'rody-data.json?v=1adbd218';
 const D = JSON.parse(document.getElementById('g-data').textContent);
 const clans = D.clans;
 let HEAVY_READY = false, HEAVY_WANTED = null;
@@ -1325,13 +1325,17 @@ function famCard(f, depth, amb){
     const tip = ch.god ? ` title="Восприемники: ${ch.god.replace(/"/g,'&quot;')}"` : '';
     const dl = deathLine[ch.name] || deathLine[ch.name+'а'];
     const dMark = (dl && dl!==ch.line) ? scanMark(dl) : '';
+    // Для подтверждённых дат смерти показываем именно годы жизни ребёнка,
+    // а не только год рождения. Поле lifeEnd задаётся точечной документальной
+    // правкой, поэтому непроверенные автоматические совпадения сюда не попадают.
+    const years = ch.lifeEnd && ch.year ? `${ch.year}–${ch.lifeEnd}` : (ch.year??'?');
     // Год смерти, известный вне метрических книг, и снимки из ленты рода:
     // слева от имени портрет, за годом смерти могила. Скана записи о смерти
     // нет, поэтому крест обычный, как велят правила вёрстки (22.08.2026).
     const dy = ch.dy ? ` <span class="g-kiddy">&#8224; <span class="y g-mono">${ch.dy}</span></span>` : '';
     return `<li class="${isDead?'dead':''}"${tip}>${ch.fotoL?fotoMark(ch.fotoL,ch.fotoT):''}`
       + `${scanMark(ch.line)}<span class="nm">${ch.name}</span>`
-      + ` <span class="y g-mono">${ch.year??'?'}</span>${dMark?' '+dMark:''}${dy}`
+      + ` <span class="y g-mono">${years}</span>${dMark?' '+dMark:''}${dy}`
       + `${ch.fotoD?' '+fotoMark(ch.fotoD,ch.fotoT):''}</li>`;
   };
   // дети группируются по матери; варианты написания одной матери (Николаев/
