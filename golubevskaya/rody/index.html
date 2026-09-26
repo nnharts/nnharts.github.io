@@ -2023,15 +2023,65 @@ const iul = document.getElementById('g-ishod');
 const ishodSorted = Object.entries(ishodIndex)
   .sort((a,b)=>b[1].length-a[1].length||a[0].localeCompare(b[0],'ru'));
 let selIshodName = null;
+
+// В узкой левой колонке место исхода всегда показываем коротко:
+// «населённый пункт, губерния/область». Полная историческая административная
+// цепочка остаётся ключом, заголовком выбранного места и текстом карточки рода.
+// Правило Никиты 27.09.2026; действует и для будущих строк Airtable.
+function shortOriginName(place){
+  const raw=String(place||'').trim();
+  if(!raw) return raw;
+  // Запятые внутри вариантов названия в скобках не являются разделителями
+  // административной цепочки: «Метлякова (Маклякова, Максакова)».
+  const parts=raw.split(/,(?![^()]*\))/).map(x=>x.trim()).filter(Boolean);
+  let name=parts[0]||raw;
+  // В этой составной записи населённые пункты стоят в конце, а губерния — в начале.
+  if(/^Тобольская губерния$/i.test(name) && /Таповая и Выползовая/i.test(raw))
+    name='Таповая и Выползовая';
+  name=name
+    .replace(/^(?:деревня|село|селение|станица|пос[её]лок|хутор)\s+/i,'')
+    .replace(/\s+волость и (?:село|селение)$/i,'')
+    .replace(/\s+(?:село|селение)$/i,'')
+    .trim();
+
+  const rules=[
+    [/Област[ьи] Войска Донского/i,'Обл. Войска Донского'],
+    [/Акмолинск(?:ая|ой|ую)?\s+област|Кокчетавский уезд/i,'Акмолинская обл.'],
+    [/Семипалатинск(?:ая|ой|ую)?\s+област|Иртышская линия/i,'Семипалатинская обл.'],
+    [/Курганск(?:ая|ой|ую)?\s+област/i,'Курганская обл.'],
+    [/Донск(?:ая|ой|ую)?\s+област/i,'Донская обл.'],
+    [/Томск(?:ая\s+губерния|ий\s+(?:округ|уезд)(?:\s+и\s+(?:губерния|губ\.))?)/i,'Томская губ.'],
+    [/Тобольск(?:ая|ой|ую)?\s+губерн/i,'Тобольская губ.'],
+    [/Самарск(?:ая|ой|ую)?\s+губ/i,'Самарская губ.'],
+    [/Рязанск(?:ая|ой|ую)?\s+губ/i,'Рязанская губ.'],
+    [/Воронежск(?:ая|ой|ую)?\s+губ|Острогожский уезд/i,'Воронежская губ.'],
+    [/Тамбовск(?:ая|ой|ую)?\s+губ/i,'Тамбовская губ.'],
+    [/Енисейск(?:ая|ой|ую)?\s+губ/i,'Енисейская губ.'],
+    [/Копальский уезд/i,'Семиреченская обл.'],
+  ];
+  let region='';
+  for(const [re,label] of rules){ if(re.test(raw)){region=label;break;} }
+  if(!region){
+    if(/^Акмолинск$/i.test(raw)) region='Акмолинская обл.';
+    else if(/^Семипалатинск$/i.test(raw)) region='Семипалатинская обл.';
+  }
+  const bareRegion=raw
+    .replace(/Томская губерния/i,'Томская губ.')
+    .replace(/Тобольская губерния/i,'Тобольская губ.');
+  if(parts.length===1 && /(?:губерния|область)$/i.test(raw)) return bareRegion;
+  return region && name!==region ? `${name}, ${region}` : name;
+}
+
 function renderIshod(filter){
   if(!iul) return;
   const q=(filter||'').trim().toLowerCase();
   iul.innerHTML='';
   ishodSorted.forEach(([place,arr])=>{
-    if(q && !place.toLowerCase().includes(q)) return;
+    const shortName=shortOriginName(place);
+    if(q && !place.toLowerCase().includes(q) && !shortName.toLowerCase().includes(q)) return;
     const li=document.createElement('li');
     li.tabIndex=0;
-    li.innerHTML=`<span>${place}</span><span class="n g-mono">${arr.length}</span>`;
+    li.innerHTML=`<span title="${place}">${shortName}</span><span class="n g-mono">${arr.length}</span>`;
     if(place===selIshodName) li.classList.add('on');
     li.onclick=()=>{selectIshod(place);document.getElementById('g-main').scrollIntoView({block:'start'})};
     li.onkeydown=e=>{if(e.key==='Enter')selectIshod(place);};
