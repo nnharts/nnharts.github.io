@@ -2028,7 +2028,10 @@ clans.forEach(c=>(c.origins||[]).forEach(o=>{
 }));
 const iul = document.getElementById('g-ishod');
 const ishodSorted = Object.entries(ishodIndex)
-  .sort((a,b)=>b[1].length-a[1].length||a[0].localeCompare(b[0],'ru'));
+  // Приоритет 1: больше родов. Приоритет 2: русский алфавит именно по
+  // короткой видимой подписи, а не по скрытой полной административной цепочке.
+  .sort((a,b)=>b[1].length-a[1].length
+    ||shortOriginName(a[0]).localeCompare(shortOriginName(b[0]),'ru'));
 let selIshodName = null;
 
 // В узкой левой колонке место исхода всегда показываем коротко:
