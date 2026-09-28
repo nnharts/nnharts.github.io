@@ -41,6 +41,8 @@
   --accent: #c85a48;
   --accent-ink: #1a1611;
   --accent-2: #6f8f78;
+  --read: #7fa085;
+  --grow: #7fae74;
   --focus: #7fb0e0;
 }
 :root[data-theme="light"] {
