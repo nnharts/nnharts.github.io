@@ -2832,7 +2832,7 @@ async function geoGuardForSlug(slug){
   let country='';
   try{country=(await (await fetch('/api/fundus-country',{cache:'no-store'})).text()).trim();}catch(e){}
   if(country==='AU'){
-    document.body.innerHTML='<main style="max-width:680px;margin:12vh auto;padding:32px;font:18px/1.55 Georgia,serif"><h1>Страница не найдена</h1><p><a href="/golubevskaya/rody/">Вернуться к справочнику родов</a></p></main>';
+    document.body.innerHTML='<main style="max-width:680px;margin:12vh auto;padding:32px;font:18px/1.55 Georgia,serif"><svg width="46" height="58" viewBox="0 0 60 78" aria-hidden="true" style="display:block;margin:0 0 18px;color:var(--accent)" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="30" cy="45" rx="18" ry="25"/><path d="M30 20v50M20 22c0-12 20-12 20 0M20 15l-7-9M40 15l7-9M13 36L3 30M47 36l10-6M12 54L2 61M48 54l10 7"/></svg><h1>Страница не найдена</h1><p><a href="/golubevskaya/rody/">Вернуться к справочнику родов</a></p></main>';
     document.body.style.visibility='visible';
     document.title='Страница не найдена - Fundus';
     return true;
