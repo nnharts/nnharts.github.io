@@ -1469,8 +1469,13 @@ function famCard(f, depth, amb){
   </div>`;
 }
 
-function select(name){
+async function select(name){
   const c = byName[name];
+  const targetSlug=slug(name);
+  if(GEO_BLOCKED_CLANS.has(targetSlug)){
+    setHash('#rod:'+targetSlug);
+    if(await geoGuardForSlug(targetSlug)) return;
+  }
   if (!HEAVY_READY) {
     // Данные ещё летят. Показываем название и счётчики, которые уже есть, и
     // честно говорим, что записи подгружаются, вместо пустого места.
@@ -2821,8 +2826,8 @@ function geoBlockedSlug(){
   const m=h.match(/^rod:([^:]+)/);
   return m&&GEO_BLOCKED_CLANS.has(m[1].toLowerCase()) ? m[1].toLowerCase() : '';
 }
-async function geoGuard(){
-  if(!geoBlockedSlug()) return false;
+async function geoGuardForSlug(slug){
+  if(!slug||!GEO_BLOCKED_CLANS.has(slug)) return false;
   document.body.style.visibility='hidden';
   let country='';
   try{country=(await (await fetch('/api/fundus-country',{cache:'no-store'})).text()).trim();}catch(e){}
@@ -2835,6 +2840,7 @@ async function geoGuard(){
   document.body.style.visibility='visible';
   return false;
 }
+async function geoGuard(){return geoGuardForSlug(geoBlockedSlug());}
 async function guardedRoute(){if(!(await geoGuard()))route();}
 renderList('');
 const _leg=document.getElementById('g-leg-fam');
