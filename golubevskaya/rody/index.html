@@ -2827,9 +2827,9 @@ async function geoGuard(){
   let country='';
   try{country=(await (await fetch('/api/fundus-country',{cache:'no-store'})).text()).trim();}catch(e){}
   if(country==='AU'){
-    document.body.innerHTML='<main style="max-width:680px;margin:12vh auto;padding:32px;font:18px/1.55 Georgia,serif"><h1>Страница недоступна</h1><p>Просмотр этого рода ограничен для подключений из Австралии.</p><p><a href="/golubevskaya/rody/">Вернуться к справочнику родов</a></p></main>';
+    document.body.innerHTML='<main style="max-width:680px;margin:12vh auto;padding:32px;font:18px/1.55 Georgia,serif"><h1>Страница не найдена</h1><p><a href="/golubevskaya/rody/">Вернуться к справочнику родов</a></p></main>';
     document.body.style.visibility='visible';
-    document.title='Страница недоступна - Fundus';
+    document.title='Страница не найдена - Fundus';
     return true;
   }
   document.body.style.visibility='visible';
