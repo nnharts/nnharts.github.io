@@ -83,10 +83,10 @@
         <div class="years">1871–1901</div>
         <div class="body-col">
           <span class="code">Метрические книги, ГА Талдыкурганской обл. Ф.597 О.1</span>
-          <p class="title"><a class="title-link" href="/golubevskaya/rody/">Справочник родов станицы Голубевской по метрическим книгам</a></p>
+          <p class="title"><a class="title-link" data-random-clan href="/golubevskaya/rody/">Справочник родов станицы Голубевской по метрическим книгам</a></p>
           <p class="note">406 родов и 698 семей, восстановленных из записей о рождениях, браках и смертях: дети по жёнам, места приписки и исхода, фотографии, газетные вырезки и сканы листов метрик.</p>
         </div>
-        <a class="order-btn read-btn" href="/golubevskaya/rody/">Читать</a>
+        <a class="order-btn read-btn" data-random-clan href="/golubevskaya/rody/">Читать</a>
       </li>
 
       <li class="delo">
@@ -269,5 +269,37 @@
   </div>
 </footer>
 <script src="/footer.js" defer></script>
+<script>
+(() => {
+  const blocked = new Set(['архипов', 'синицын']);
+  const translit = {
+    а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',
+    к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',
+    х:'h',ц:'c',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya'
+  };
+  const slug = name => [...name.toLowerCase()]
+    .map(ch => translit[ch] ?? ch).join('')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+  document.querySelectorAll('[data-random-clan]').forEach(link => {
+    link.addEventListener('click', async event => {
+      event.preventDefault();
+      try {
+        const response = await fetch('/golubevskaya/rody/rody-data.json', {
+          cache: 'no-store'
+        });
+        if (!response.ok) throw new Error('Не удалось загрузить список родов');
+        const data = await response.json();
+        const clans = Object.keys(data.fam || {}).filter(name => !blocked.has(name));
+        if (!clans.length) throw new Error('Список родов пуст');
+        const clan = clans[Math.floor(Math.random() * clans.length)];
+        window.location.href = '/golubevskaya/rody/#rod:' + slug(clan);
+      } catch (_) {
+        window.location.href = '/golubevskaya/rody/';
+      }
+    });
+  });
+})();
+</script>
 </body>
 </html>
