@@ -70,7 +70,7 @@
 .g-ish-list{list-style:none;margin:0;padding:0}
 .g-ish-row{padding:7px 0;border-bottom:1px solid var(--rule);cursor:pointer}
 .g-ish-row:hover{background:var(--paper-2)}
-.g-map-embed{margin:10px 0;max-width:700px}
+.g-map-embed{margin:10px 0;max-width:700px}.g-map-img{margin:10px 0 4px;max-width:560px}.g-map-img img{width:100%;height:auto;display:block;border:1px solid var(--rule);border-radius:3px}.g-map-img figcaption{font-size:.78em;color:var(--ink-dim);margin-top:5px;line-height:1.35}
 .g-map-embed iframe{width:100%;height:240px;border:1px solid var(--rule);display:block}
 @media(max-width:600px){.g-map-embed iframe{height:200px}}
 .g-ish-name{color:var(--accent);border-bottom:1px solid transparent}
@@ -1100,7 +1100,7 @@ const hasOrig=c=>c.orig.length>0;
 const hasDoc=c=>(c.nf||(c.fams||[]).length)>0;
 const hasDNA=c=>DNA_CLANS.includes(c.name);
 const FILT={photo:false,tales:false,origin:false,dna:false,scan:false};
-const userFotoRods=new Set(["коваленко", "ксенз", "москаленко", "федоренко"]);
+const userFotoRods=new Set(["коваленко", "ксенз", "федоренко"]);
 function buildFilt(){
   const el=document.getElementById('g-filt'); if(!el) return;
   el.innerHTML='';
